@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vjezba.DAL;
 
@@ -10,9 +11,11 @@ using Vjezba.DAL;
 namespace Vjezba.DAL.Migrations
 {
     [DbContext(typeof(ClientManagerDbContext))]
-    partial class ClientManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523115917_mod")]
+    partial class mod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
@@ -272,7 +275,7 @@ namespace Vjezba.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<int>("CurrentRound")
                         .HasColumnType("INTEGER");
@@ -302,7 +305,7 @@ namespace Vjezba.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValueSql("datetime('now')");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()

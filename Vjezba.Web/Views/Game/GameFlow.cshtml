@@ -1,0 +1,115 @@
+@model Vjezba.Model.Game
+
+@{
+    ViewData["Title"] = $"Game Flow - {Model.Code}";
+    var playerScores = ViewBag.PlayerScores as Dictionary<string, int>;
+}
+
+<div class="container">
+    <!-- Game Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Game: @Model.Code</h2>
+            <p>Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+            @if (Model.FinishedAt.HasValue)
+            {
+                <p>Finished: @Model.FinishedAt.Value.ToString("yyyy-MM-dd HH:mm")</p>
+            }
+        </div>
+    </div>
+
+    <!-- Players -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Players (@Model.PlayersCollection.Count)</h4>
+            <div class="row">
+                @foreach (var player in Model.PlayersCollection)
+                {
+                    var playerScore = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
+                        ? playerScores[player.ConnectionId] : 0;
+                    
+                    <div class="col-md-3 mb-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>@player.Name</h6>
+                                <p>Total Score: @playerScore</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Rounds -->
+    <div class="row">
+        <div class="col-12">
+            <h4>Rounds (@Model.RoundsCollection.Count)</h4>
+            @{
+                var sortedRounds = Model.RoundsCollection.OrderBy(r => r.Number).ToList();
+            }
+            @foreach (var round in sortedRounds)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Round @round.Number</h5>
+                        @if (!string.IsNullOrEmpty(round.CorrectAnswer))
+                        {
+                            <p class="mb-0">Correct Answer: @round.CorrectAnswer</p>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(round.Image))
+                        {
+                            <div class="mb-3">
+                                @if (round.Image.StartsWith("data:image"))
+                                {
+                                    <!-- Already a proper data URL -->
+                                    <img src="@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
+                                }
+                                else
+                                {
+                                    <!-- Base64 string that needs data URL prefix -->
+                                    <img src="data:image/jpeg;base64,@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
+                                }
+                            </div>
+                        }
+                        
+                        <h6>Answers (@round.AnswersCollection.Count)</h6>
+                        @if (round.AnswersCollection.Any())
+                        {
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Answer</th>
+                                        <th>Score</th>
+                                        <th>Time Left</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var sortedAnswers = round.AnswersCollection.OrderByDescending(a => a.Score).ToList();
+                                    }
+                                    @foreach (var answer in sortedAnswers)
+                                    {
+                                        <tr>
+                                            <td>@answer.Player</td>
+                                            <td>@answer.PlayersAnswer</td>
+                                            <td>@answer.Score</td>
+                                            <td>@answer.TimeRemaining s</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No answers for this round.</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -16,5 +16,12 @@ namespace Vjezba.Model
         public string CorrectAnswer { get; set; } = string.Empty;
 
         public List<Answer> Answers { get; set; } = new List<Answer>();
+
+        // Foreign key for Game
+        public int GameId { get; set; }
+        public virtual Game Game { get; set; }
+
+        // Navigation property
+        public virtual ICollection<Answer> AnswersCollection { get; set; } = new List<Answer>();
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
-using Vjezba.Web;
 
 namespace Vjezba.Web;
 

@@ -19,5 +19,5 @@ namespace Vjezba.Model
         {
             return Players.Count > 0 && Players.All(player => player.IsReady);
         }
-    } 
+    }
 }

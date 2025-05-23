@@ -14,6 +14,7 @@ builder.Services.AddSignalR(
            options.MaximumReceiveMessageSize = 64 * 1024 * 1024; // 10MB
     }
 );
+builder.Services.AddScoped<IGameManager, GameManager>();
 
 var app = builder.Build();
 

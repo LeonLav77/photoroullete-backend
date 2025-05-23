@@ -13,8 +13,16 @@ public interface IRoundManager
 
 public class RoundManager : IRoundManager
 {
-    private static readonly int ROUNDS = 5;
+    private static readonly int ROUNDS = 3;
     private static readonly int ROUND_TIME = 5;
+    
+    // Add dependency injection for GameManager
+    private readonly IGameManager _gameManager;
+
+    public RoundManager(IGameManager gameManager = null)
+    {
+        _gameManager = gameManager;
+    }
 
     public async Task StartRound(string lobbyCode, IHubCallerClients clients, Game game, int roundNumber = 1)
     {
@@ -71,10 +79,25 @@ public class RoundManager : IRoundManager
         var leaderboard = GetLeaderboard(game);
         var jsonLeaderboard = JsonConvert.SerializeObject(leaderboard);
         
-        Console.WriteLine("Game over");
+        Console.WriteLine($"[{lobbyCode}] Game over - saving to database");
         await clients.Group(lobbyCode).SendAsync("GameOver", jsonLeaderboard);
+        
+        // IMPORTANT: Save the game to database here, when we know it's truly finished
+        if (_gameManager != null)
+        {
+            try
+            {
+                await _gameManager.SaveGameToDatabase(lobbyCode);
+                Console.WriteLine($"[{lobbyCode}] Game successfully saved to database");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{lobbyCode}] Error saving game to database: {ex.Message}");
+            }
+        }
     }
 
+    // ... rest of the methods remain the same
     private Round CreateNewRound(Game game, int roundNumber)
     {
         var imageEntry = game.Images.ElementAt(roundNumber - 1);
