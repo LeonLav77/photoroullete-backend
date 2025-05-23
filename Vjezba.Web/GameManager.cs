@@ -18,18 +18,91 @@ public class GameManager : IGameManager
     private static readonly Dictionary<string, Game> _games = new Dictionary<string, Game>();
     private static readonly Dictionary<string, Dictionary<string, string>> _playerBase64Images = new Dictionary<string, Dictionary<string, string>>();
     private static readonly int ROUNDS = 5;
-    private static readonly int ROUND_TIME = 5;
+    
+    private readonly IRoundManager _roundManager;
+
+    public GameManager() : this(new RoundManager())
+    {
+    }
+
+    public GameManager(IRoundManager roundManager)
+    {
+        _roundManager = roundManager;
+    }
 
     public async Task PrepareGame(JObject parsed, IHubCallerClients clients)
     {
-        string startLobbyCode = parsed["data"]["lobbyCode"]?.ToString();
-        var lobbyManager = new LobbyManager();
-        var lobby = lobbyManager.GetLobby(startLobbyCode);
+        string startLobbyCode = ExtractLobbyCode(parsed);
+        var lobby = GetLobbyForCode(startLobbyCode);
 
         if (lobby == null) return;
 
-        Dictionary<string, string> randomizedImages = GetRandomizedImages(lobby);
+        var randomizedImages = GetRandomizedImages(lobby);
+        await SendImageRequestsToPlayers(randomizedImages, clients);
 
+        Console.WriteLine("Image requests sent to players");
+    }
+
+    public async Task TurnOverImages(JObject parsed, string connectionId, IHubCallerClients clients, IGroupManager groups)
+    {
+        var base64Images = parsed["data"]["images"]?.ToObject<List<string>>();
+        string lobbyCode = ExtractLobbyCode(parsed);
+
+        Console.WriteLine($"Received base64 images: {base64Images.Count}");
+
+        StorePlayerImages(lobbyCode, base64Images, connectionId);
+        Console.WriteLine($"Total images stored: {_playerBase64Images[lobbyCode].Count}");
+
+        if (AllImagesReceived(lobbyCode))
+        {
+            await StartGame(lobbyCode, clients, groups);
+        }
+    }
+
+    public async Task SaveAnswer(JObject parsed, string connectionId)
+    {
+        string answer = parsed["data"]["answer"]?.ToString();
+        string lobbyCode = ExtractLobbyCode(parsed);
+        int timeRemaining = (int)parsed["data"]["timeRemaining"];
+
+        if (!_games.ContainsKey(lobbyCode)) return;
+
+        var game = _games[lobbyCode];
+        var currentRound = game.Rounds.LastOrDefault();
+
+        if (currentRound != null)
+        {
+            _roundManager.SavePlayerAnswer(currentRound, connectionId, answer, timeRemaining);
+        }
+    }
+
+    public async Task HandlePlayerReady(JObject parsed, string connectionId, ILobbyManager lobbyManager, IHubCallerClients clients)
+    {
+        string lobbyCode = ExtractLobbyCode(parsed);
+        var lobby = GetLobbyForCode(lobbyCode);
+
+        if (lobby == null) return;
+
+        if (SetPlayerReady(lobby, connectionId) && lobby.AllPlayersReady())
+        {
+            Console.WriteLine("All players are ready");
+            await _roundManager.StartRound(lobbyCode, clients, _games[lobbyCode], 1);
+        }
+    }
+
+    private string ExtractLobbyCode(JObject parsed)
+    {
+        return parsed["data"]["lobbyCode"]?.ToString();
+    }
+
+    private Lobby GetLobbyForCode(string lobbyCode)
+    {
+        var lobbyManager = new LobbyManager();
+        return lobbyManager.GetLobby(lobbyCode);
+    }
+
+    private async Task SendImageRequestsToPlayers(Dictionary<string, string> randomizedImages, IHubCallerClients clients)
+    {
         var groupedImages = randomizedImages.GroupBy(x => x.Value)
             .ToDictionary(g => g.Key, g => g.Select(x => x.Key).ToList());
 
@@ -38,99 +111,32 @@ public class GameManager : IGameManager
             string requestedImages = JsonConvert.SerializeObject(image.Value);
             await clients.Client(image.Key).SendAsync("RequestImages", requestedImages);
         }
-
-        Console.WriteLine("Image requests sent to players");
     }
 
-    public async Task TurnOverImages(JObject parsed, string connectionId, IHubCallerClients clients, IGroupManager groups)
+    private void StorePlayerImages(string lobbyCode, List<string> base64Images, string connectionId)
     {
-        List<string> base64Images = parsed["data"]["images"]?.ToObject<List<string>>();
-        string turnOverLobbyCode = parsed["data"]["lobbyCode"]?.ToString();
-
-        Console.WriteLine($"Received base64 images: {base64Images.Count}");
-
-        if (!_playerBase64Images.ContainsKey(turnOverLobbyCode))
+        if (!_playerBase64Images.ContainsKey(lobbyCode))
         {
-            _playerBase64Images[turnOverLobbyCode] = new Dictionary<string, string>();
+            _playerBase64Images[lobbyCode] = new Dictionary<string, string>();
         }
 
         foreach (var base64Image in base64Images)
         {
-            if (!_playerBase64Images[turnOverLobbyCode].ContainsKey(base64Image))
+            if (!_playerBase64Images[lobbyCode].ContainsKey(base64Image))
             {
-                _playerBase64Images[turnOverLobbyCode][base64Image] = connectionId;
-            }
-        }
-
-        Console.WriteLine($"Received base64 images: {_playerBase64Images[turnOverLobbyCode].Count}");
-
-        if (_playerBase64Images[turnOverLobbyCode].Count == ROUNDS)
-        {
-            await StartGame(turnOverLobbyCode, clients, groups);
-        }
-    }
-
-    public async Task SaveAnswer(JObject parsed, string connectionId)
-    {
-        string answer = parsed["data"]["answer"]?.ToString();
-        string lobbyCodeForAnswer = parsed["data"]["lobbyCode"]?.ToString();
-        int timeRemaining = (int)parsed["data"]["timeRemaining"];
-
-        if (_games.ContainsKey(lobbyCodeForAnswer))
-        {
-            var game = _games[lobbyCodeForAnswer];
-            var round = game.Rounds.LastOrDefault();
-
-            if (round != null)
-            {
-                // Check if player already has an answer for this round
-                var existingAnswer = round.Answers?.FirstOrDefault(a => a.Player == connectionId);
-                
-                if (existingAnswer == null)
-                {
-                    var answerObj = new Answer
-                    {
-                        Player = connectionId,
-                        PlayersAnswer = answer,
-                        TimeRemaining = timeRemaining
-                    };
-                    round.Answers.Add(answerObj);
-                    Console.WriteLine($"Answer saved for player {connectionId}: {answer} with {timeRemaining}ms remaining");
-                }
-                else
-                {
-                    Console.WriteLine($"Player {connectionId} already has an answer for this round");
-                }
+                _playerBase64Images[lobbyCode][base64Image] = connectionId;
             }
         }
     }
 
-    public async Task HandlePlayerReady(JObject parsed, string connectionId, ILobbyManager lobbyManager, IHubCallerClients clients)
+    private bool AllImagesReceived(string lobbyCode)
     {
-        string readyLobbyCode = parsed["data"]["lobbyCode"].ToString();
-
-        var lobby = lobbyManager.GetLobby(readyLobbyCode);
-        if (lobby != null)
-        {
-            var player = lobby.Players.FirstOrDefault(p => p.ConnectionId == connectionId);
-
-            if (player != null && !player.IsReady)
-            {
-                player.IsReady = true;
-
-                if (lobby.AllPlayersReady())
-                {
-                    Console.WriteLine("All players are ready");
-                    await StartRound(readyLobbyCode, clients);
-                }
-            }
-        }
+        return _playerBase64Images[lobbyCode].Count == ROUNDS;
     }
 
     private async Task StartGame(string lobbyCode, IHubCallerClients clients, IGroupManager groups)
     {
-        var lobbyManager = new LobbyManager();
-        var lobby = lobbyManager.GetLobby(lobbyCode);
+        var lobby = GetLobbyForCode(lobbyCode);
         var images = _playerBase64Images[lobbyCode];
 
         Game game = new Game
@@ -141,148 +147,20 @@ public class GameManager : IGameManager
         };
 
         _games[lobbyCode] = game;
-
         await clients.Group(lobbyCode).SendAsync("GameStarted", lobbyCode);
     }
 
-    private async Task StartRound(string lobbyCode, IHubCallerClients clients, int roundNumber = 1)
+    private bool SetPlayerReady(Lobby lobby, string connectionId)
     {
-        if (roundNumber > ROUNDS)
+        var player = lobby.Players.FirstOrDefault(p => p.ConnectionId == connectionId);
+        
+        if (player != null && !player.IsReady)
         {
-            var leaderboard = GetLeaderboardWithAllRounds(lobbyCode);
-
-            var jsonLeaderboard = JsonConvert.SerializeObject(leaderboard);
-            Console.WriteLine("Game over");
-            await clients.Group(lobbyCode).SendAsync("GameOver", jsonLeaderboard);
-            return;
+            player.IsReady = true;
+            return true;
         }
-
-        var gameState = _games[lobbyCode];
-
-        var newRound = new Round
-        {
-            Number = roundNumber,
-            Image = gameState.Images.ElementAt(roundNumber - 1).Key,
-            Duration = ROUND_TIME,
-            CorrectAnswer = gameState.Images.ElementAt(roundNumber - 1).Value,
-            Answers = new List<Answer>()
-        };
-
-        string sendObjectJson = JsonConvert.SerializeObject(newRound);
-
-        gameState.Rounds.Add(newRound);
-
-        await clients.Group(lobbyCode).SendAsync("RoundStarted", sendObjectJson);
-
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await Task.Delay(ROUND_TIME * 1000);
-
-                var currentRound = GetCurrentRound(lobbyCode);
-                if (currentRound == null) return;
-
-                var correctAnswerPlayer = gameState.Players.FirstOrDefault(p => p.ConnectionId == currentRound.CorrectAnswer);
-                var json = JsonConvert.SerializeObject(correctAnswerPlayer);
-
-                await clients.Group(lobbyCode).SendAsync("CorrectAnswer", json);
-
-                await Task.Delay(500);
-
-                // Ensure all players have answers (create default answers for those who didn't respond)
-                foreach (var player in gameState.Players)
-                {
-                    var existingAnswer = currentRound.Answers?.FirstOrDefault(a => a.Player == player.ConnectionId);
-
-                    if (existingAnswer != null)
-                    {
-                        // Calculate score for existing answer
-                        var points = CalculateRoundResults(existingAnswer, currentRound);
-                        existingAnswer.Score = points;
-                        Console.WriteLine($"Player {player.ConnectionId} scored {points} points");
-                    }
-                    else
-                    {
-                        // Create default answer for players who didn't respond
-                        var newAnswer = new Answer
-                        {
-                            Player = player.ConnectionId,
-                            PlayersAnswer = "No answer",
-                            TimeRemaining = 0,
-                            Score = 0
-                        };
-                        currentRound.Answers.Add(newAnswer);
-                        Console.WriteLine($"Player {player.ConnectionId} didn't answer, scored 0 points");
-                    }
-                }
-
-                // Update the round in the game
-                SetCurrentRound(lobbyCode, currentRound);
-
-                var leaderboard = GetLeaderboardWithAllRounds(lobbyCode);
-
-                var jsonLeaderboard = JsonConvert.SerializeObject(leaderboard);
-
-                await clients.Group(lobbyCode).SendAsync("RoundEnded", jsonLeaderboard);
-
-                await Task.Delay(2200);
-                
-                await StartRound(lobbyCode, clients, roundNumber + 1);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in timer: {ex.Message}");
-            }
-        });
-    }
-
-    private Dictionary<string, int> GetLeaderboardWithAllRounds(string lobbyCode)
-    {
-        if (!_games.ContainsKey(lobbyCode))
-        {
-            return new Dictionary<string, int>();
-        }
-
-        var game = _games[lobbyCode];
-        var leaderboard = new Dictionary<string, int>();
-
-        foreach (var round in game.Rounds)
-        {
-            if (round.Answers == null) continue;
-
-            foreach (var answer in round.Answers)
-            {
-                if (string.IsNullOrEmpty(answer.Player)) continue;
-
-                if (!leaderboard.ContainsKey(answer.Player))
-                {
-                    leaderboard[answer.Player] = 0;
-                }
-
-                leaderboard[answer.Player] += answer.Score;
-            }
-        }
-
-        return leaderboard.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-    }
-
-    private int CalculateRoundResults(Answer answer, Round round)
-    {
-        // Only award points for correct answers
-        if (round.CorrectAnswer != answer.PlayersAnswer)
-        {
-            return 0;
-        }
-
-        // For correct answers, award points based on speed
-        // Faster answers get more points
-        var maxPoints = ROUND_TIME * 1000; // Maximum possible points
-        var timeTaken = maxPoints - answer.TimeRemaining; // Time it took to answer
-        var points = Math.Max(100, maxPoints - timeTaken); // Minimum 100 points, max is ROUND_TIME * 1000
-
-        Console.WriteLine($"Correct answer! Time remaining: {answer.TimeRemaining}ms, Points awarded: {points}");
-        return points;
+        
+        return false;
     }
 
     private Dictionary<string, string> GetRandomizedImages(Lobby lobby)
@@ -290,53 +168,32 @@ public class GameManager : IGameManager
         var playerImages = new Dictionary<string, string>();
         var random = new Random();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < ROUNDS; i++)
         {
-            var randomNumber = random.Next(0, lobby.Players.Count);
-            var player = lobby.Players[randomNumber];
-
-            var randomImage = GetRandomItemFromList(player.Images);
+            var randomPlayer = GetRandomPlayer(lobby, random);
+            var randomImage = GetRandomImage(randomPlayer.Images, random);
 
             while (playerImages.ContainsKey(randomImage))
             {
-                randomNumber = random.Next(0, lobby.Players.Count);
-                player = lobby.Players[randomNumber];
-                randomImage = GetRandomItemFromList(player.Images);
+                randomPlayer = GetRandomPlayer(lobby, random);
+                randomImage = GetRandomImage(randomPlayer.Images, random);
             }
 
-            playerImages.Add(randomImage, player.ConnectionId);
+            playerImages.Add(randomImage, randomPlayer.ConnectionId);
         }
 
         return playerImages;
     }
 
-    private string GetRandomItemFromList(List<string> list)
+    private Player GetRandomPlayer(Lobby lobby, Random random)
     {
-        var random = new Random();
-        int randomIndex = random.Next(0, list.Count);
-        return list[randomIndex];
+        var randomIndex = random.Next(0, lobby.Players.Count);
+        return lobby.Players[randomIndex];
     }
 
-    private Round? GetCurrentRound(string lobbyCode)
+    private string GetRandomImage(List<string> images, Random random)
     {
-        if (_games.ContainsKey(lobbyCode))
-        {
-            var game = _games[lobbyCode];
-            return game.Rounds.LastOrDefault();
-        }
-
-        return null;
-    }
-    
-    private void SetCurrentRound(string lobbyCode, Round round)
-    {
-        if (_games.ContainsKey(lobbyCode))
-        {
-            var game = _games[lobbyCode];
-            if (game.Rounds.Count > 0)
-            {
-                game.Rounds[game.Rounds.Count - 1] = round;
-            }
-        }
+        var randomIndex = random.Next(0, images.Count);
+        return images[randomIndex];
     }
 }
