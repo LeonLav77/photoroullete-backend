@@ -17,7 +17,7 @@ public class GameManager : IGameManager
 {
     private static readonly Dictionary<string, Game> _games = new Dictionary<string, Game>();
     private static readonly Dictionary<string, Dictionary<string, string>> _playerBase64Images = new Dictionary<string, Dictionary<string, string>>();
-    private static readonly int ROUNDS = 10;
+    private static readonly int ROUNDS = 5;
     private static readonly int ROUND_TIME = 5;
 
     public async Task PrepareGame(JObject parsed, IHubCallerClients clients)

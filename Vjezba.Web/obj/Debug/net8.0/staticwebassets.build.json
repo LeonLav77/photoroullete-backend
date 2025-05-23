@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "KP3jI0KlfOFNW30EcUfcXAyQJDxXpQarz07e93vFXs8=",
+  "Hash": "YJ3W7QadgnGbLKXazUwmoOHOubIR1M8wIrF+kIqkpt4=",
   "Source": "Vjezba.Web",
   "BasePath": "_content/Vjezba.Web",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "Vjezba.Web\\wwwroot",
       "Source": "Vjezba.Web",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "Pattern": "**"
     }
@@ -1277,10 +1277,10 @@
       "OriginalItemSpec": "C:\\Users\\Leon\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\8.0.15\\staticwebassets\\V5\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
       "SourceId": "Vjezba.Web",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "Vjezba.Web#[.{fingerprint}]?.styles.css",
       "AssetKind": "All",
@@ -1295,13 +1295,13 @@
       "Integrity": "05/j+rwYZ9dWrAo1mA4up7PTq/BnJXTkMm57slqj+SA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css"
+      "OriginalItemSpec": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
       "SourceId": "Vjezba.Web",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "Vjezba.Web#[.{fingerprint}]!.bundle.scp.css",
       "AssetKind": "All",
@@ -1316,13 +1316,13 @@
       "Integrity": "05/j+rwYZ9dWrAo1mA4up7PTq/BnJXTkMm57slqj+SA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css"
+      "OriginalItemSpec": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\css\\site.css",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\css\\site.css",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "css/site#[.{fingerprint}]?.css",
       "AssetKind": "All",
@@ -1340,10 +1340,10 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\cities.xml",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\cities.xml",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "data/cities#[.{fingerprint}]?.xml",
       "AssetKind": "All",
@@ -1361,10 +1361,10 @@
       "OriginalItemSpec": "wwwroot\\data\\cities.xml"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\clients.xml",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\clients.xml",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "data/clients#[.{fingerprint}]?.xml",
       "AssetKind": "All",
@@ -1382,10 +1382,10 @@
       "OriginalItemSpec": "wwwroot\\data\\clients.xml"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\favicon.ico",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\favicon.ico",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "favicon#[.{fingerprint}]?.ico",
       "AssetKind": "All",
@@ -1403,10 +1403,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\js\\site.js",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\js\\site.js",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "js/site#[.{fingerprint}]?.js",
       "AssetKind": "All",
@@ -1424,10 +1424,10 @@
       "OriginalItemSpec": "wwwroot\\js\\site.js"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "uploads/clients/1/6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -1445,10 +1445,10 @@
       "OriginalItemSpec": "wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg"
     },
     {
-      "Identity": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "Identity": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "SourceId": "Vjezba.Web",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\",
       "BasePath": "_content/Vjezba.Web",
       "RelativePath": "uploads/clients/1/80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -1469,7 +1469,7 @@
   "Endpoints": [
     {
       "Route": "css/site.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\css\\site.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\css\\site.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1506,7 +1506,7 @@
     },
     {
       "Route": "css/site.dbpjv58mal.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\css\\site.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\css\\site.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1551,7 +1551,7 @@
     },
     {
       "Route": "data/cities.lib9ye60vs.xml",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\cities.xml",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\cities.xml",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1596,7 +1596,7 @@
     },
     {
       "Route": "data/cities.xml",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\cities.xml",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\cities.xml",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1633,7 +1633,7 @@
     },
     {
       "Route": "data/clients.7yy2le3658.xml",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\clients.xml",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\clients.xml",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1678,7 +1678,7 @@
     },
     {
       "Route": "data/clients.xml",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\clients.xml",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\data\\clients.xml",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1715,7 +1715,7 @@
     },
     {
       "Route": "favicon.61n19gt1b8.ico",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\favicon.ico",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\favicon.ico",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1760,7 +1760,7 @@
     },
     {
       "Route": "favicon.ico",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\favicon.ico",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\favicon.ico",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4017,7 +4017,7 @@
     },
     {
       "Route": "js/site.6b9nfc4n3r.js",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\js\\site.js",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\js\\site.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4062,7 +4062,7 @@
     },
     {
       "Route": "js/site.js",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\js\\site.js",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\js\\site.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4099,7 +4099,7 @@
     },
     {
       "Route": "uploads/clients/1/6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4136,7 +4136,7 @@
     },
     {
       "Route": "uploads/clients/1/6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.ppbr83lhw4.jpg",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4181,7 +4181,7 @@
     },
     {
       "Route": "uploads/clients/1/80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4218,7 +4218,7 @@
     },
     {
       "Route": "uploads/clients/1/80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.ppbr83lhw4.jpg",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4263,7 +4263,7 @@
     },
     {
       "Route": "Vjezba.Web.bundle.scp.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4300,7 +4300,7 @@
     },
     {
       "Route": "Vjezba.Web.nvit3ibaes.bundle.scp.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4345,7 +4345,7 @@
     },
     {
       "Route": "Vjezba.Web.nvit3ibaes.styles.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4390,7 +4390,7 @@
     },
     {
       "Route": "Vjezba.Web.styles.css",
-      "AssetFile": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
+      "AssetFile": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\Debug\\net8.0\\scopedcss\\bundle\\Vjezba.Web.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
