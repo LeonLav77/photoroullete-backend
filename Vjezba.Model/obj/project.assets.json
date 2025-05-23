@@ -4004,11 +4004,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Model\\Vjezba.Model.csproj",
+      "projectUniqueName": "c:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Model\\Vjezba.Model.csproj",
       "projectName": "Vjezba.Model",
-      "projectPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Model\\Vjezba.Model.csproj",
+      "projectPath": "c:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Model\\Vjezba.Model.csproj",
       "packagesPath": "C:\\Users\\Leon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Model\\obj\\",
+      "outputPath": "c:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Model\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Leon\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -9569,11 +9569,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\Vjezba.Web.csproj",
+      "projectUniqueName": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\Vjezba.Web.csproj",
       "projectName": "Vjezba.Web",
-      "projectPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\Vjezba.Web.csproj",
+      "projectPath": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\Vjezba.Web.csproj",
       "packagesPath": "C:\\Users\\Leon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\",
+      "outputPath": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Leon\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -9588,11 +9588,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.DAL\\Vjezba.DAL.csproj": {
-              "projectPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.DAL\\Vjezba.DAL.csproj"
+            "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.DAL\\Vjezba.DAL.csproj": {
+              "projectPath": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.DAL\\Vjezba.DAL.csproj"
             },
-            "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Model\\Vjezba.Model.csproj": {
-              "projectPath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Model\\Vjezba.Model.csproj"
+            "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Model\\Vjezba.Model.csproj": {
+              "projectPath": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.Model\\Vjezba.Model.csproj"
             }
           }
         }

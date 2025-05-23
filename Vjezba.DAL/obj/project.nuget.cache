@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VqcwSqgT3Tc=",
+  "dgSpecHash": "aFJvDCaE53o=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.DAL\\Vjezba.DAL.csproj",
+  "projectFilePath": "C:\\Users\\Leon\\Desktop\\qwewqe\\Vjezba.DAL\\Vjezba.DAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Leon\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Leon\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.3.0\\microsoft.aspnetcore.authentication.abstractions.2.3.0.nupkg.sha512",
