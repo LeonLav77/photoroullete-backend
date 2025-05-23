@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Vjezba.Model;
+using System.Collections.Concurrent;
 
 namespace Vjezba.Web;
 
@@ -15,8 +16,10 @@ public interface IGameManager
 
 public class GameManager : IGameManager
 {
-    private static readonly Dictionary<string, Game> _games = new Dictionary<string, Game>();
-    private static readonly Dictionary<string, Dictionary<string, string>> _playerBase64Images = new Dictionary<string, Dictionary<string, string>>();
+    // Use ConcurrentDictionary for thread safety in cloud environments
+    private static readonly ConcurrentDictionary<string, Game> _games = new ConcurrentDictionary<string, Game>();
+    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _playerBase64Images = 
+        new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
     private static readonly int ROUNDS = 5;
     
     private readonly IRoundManager _roundManager;
@@ -40,7 +43,7 @@ public class GameManager : IGameManager
         var randomizedImages = GetRandomizedImages(lobby);
         await SendImageRequestsToPlayers(randomizedImages, clients);
 
-        Console.WriteLine("Image requests sent to players");
+        Console.WriteLine($"[{startLobbyCode}] Image requests sent to players");
     }
 
     public async Task TurnOverImages(JObject parsed, string connectionId, IHubCallerClients clients, IGroupManager groups)
@@ -48,14 +51,31 @@ public class GameManager : IGameManager
         var base64Images = parsed["data"]["images"]?.ToObject<List<string>>();
         string lobbyCode = ExtractLobbyCode(parsed);
 
-        Console.WriteLine($"Received base64 images: {base64Images.Count}");
+        Console.WriteLine($"[{lobbyCode}] Received {base64Images?.Count ?? 0} base64 images from {connectionId}");
+
+        if (base64Images == null || !base64Images.Any())
+        {
+            Console.WriteLine($"[{lobbyCode}] No images received from {connectionId}");
+            return;
+        }
 
         StorePlayerImages(lobbyCode, base64Images, connectionId);
-        Console.WriteLine($"Total images stored: {_playerBase64Images[lobbyCode].Count}");
+        
+        var currentImageCount = _playerBase64Images.ContainsKey(lobbyCode) ? _playerBase64Images[lobbyCode].Count : 0;
+        Console.WriteLine($"[{lobbyCode}] Total images stored: {currentImageCount}/{ROUNDS}");
 
         if (AllImagesReceived(lobbyCode))
         {
+            Console.WriteLine($"[{lobbyCode}] All images received, starting game");
             await StartGame(lobbyCode, clients, groups);
+        }
+        else
+        {
+            // Notify other players about progress
+            await clients.Group(lobbyCode).SendAsync("ImageUploadProgress", new { 
+                received = currentImageCount, 
+                total = ROUNDS 
+            });
         }
     }
 
@@ -65,14 +85,18 @@ public class GameManager : IGameManager
         string lobbyCode = ExtractLobbyCode(parsed);
         int timeRemaining = (int)parsed["data"]["timeRemaining"];
 
-        if (!_games.ContainsKey(lobbyCode)) return;
+        if (!_games.TryGetValue(lobbyCode, out var game)) 
+        {
+            Console.WriteLine($"[{lobbyCode}] Game not found for saving answer");
+            return;
+        }
 
-        var game = _games[lobbyCode];
         var currentRound = game.Rounds.LastOrDefault();
 
         if (currentRound != null)
         {
             _roundManager.SavePlayerAnswer(currentRound, connectionId, answer, timeRemaining);
+            Console.WriteLine($"[{lobbyCode}] Answer saved for {connectionId}");
         }
     }
 
@@ -81,12 +105,24 @@ public class GameManager : IGameManager
         string lobbyCode = ExtractLobbyCode(parsed);
         var lobby = GetLobbyForCode(lobbyCode);
 
-        if (lobby == null) return;
+        if (lobby == null) 
+        {
+            Console.WriteLine($"[{lobbyCode}] Lobby not found for player ready");
+            return;
+        }
 
         if (SetPlayerReady(lobby, connectionId) && lobby.AllPlayersReady())
         {
-            Console.WriteLine("All players are ready");
-            await _roundManager.StartRound(lobbyCode, clients, _games[lobbyCode], 1);
+            Console.WriteLine($"[{lobbyCode}] All players are ready");
+            
+            if (_games.TryGetValue(lobbyCode, out var game))
+            {
+                await _roundManager.StartRound(lobbyCode, clients, game, 1);
+            }
+            else
+            {
+                Console.WriteLine($"[{lobbyCode}] Game not found when trying to start round");
+            }
         }
     }
 
@@ -110,44 +146,63 @@ public class GameManager : IGameManager
         {
             string requestedImages = JsonConvert.SerializeObject(image.Value);
             await clients.Client(image.Key).SendAsync("RequestImages", requestedImages);
+            Console.WriteLine($"Sent image request to {image.Key}: {image.Value.Count} images");
         }
     }
 
     private void StorePlayerImages(string lobbyCode, List<string> base64Images, string connectionId)
     {
-        if (!_playerBase64Images.ContainsKey(lobbyCode))
-        {
-            _playerBase64Images[lobbyCode] = new Dictionary<string, string>();
-        }
+        // Initialize the lobby's image dictionary if it doesn't exist
+        var lobbyImages = _playerBase64Images.GetOrAdd(lobbyCode, _ => new ConcurrentDictionary<string, string>());
 
         foreach (var base64Image in base64Images)
         {
-            if (!_playerBase64Images[lobbyCode].ContainsKey(base64Image))
+            // Use TryAdd to avoid overwriting existing images
+            if (lobbyImages.TryAdd(base64Image, connectionId))
             {
-                _playerBase64Images[lobbyCode][base64Image] = connectionId;
+                Console.WriteLine($"[{lobbyCode}] Stored image from {connectionId}");
+            }
+            else
+            {
+                Console.WriteLine($"[{lobbyCode}] Image already exists from {connectionId}");
             }
         }
     }
 
     private bool AllImagesReceived(string lobbyCode)
     {
-        return _playerBase64Images[lobbyCode].Count == ROUNDS;
+        if (!_playerBase64Images.TryGetValue(lobbyCode, out var lobbyImages))
+        {
+            Console.WriteLine($"[{lobbyCode}] No images found for lobby");
+            return false;
+        }
+        
+        bool allReceived = lobbyImages.Count >= ROUNDS;
+        Console.WriteLine($"[{lobbyCode}] Image check: {lobbyImages.Count}/{ROUNDS} - All received: {allReceived}");
+        return allReceived;
     }
 
     private async Task StartGame(string lobbyCode, IHubCallerClients clients, IGroupManager groups)
     {
         var lobby = GetLobbyForCode(lobbyCode);
-        var images = _playerBase64Images[lobbyCode];
+        
+        if (!_playerBase64Images.TryGetValue(lobbyCode, out var images))
+        {
+            Console.WriteLine($"[{lobbyCode}] No images found when starting game");
+            return;
+        }
 
         Game game = new Game
         {
             Code = lobbyCode,
             Players = lobby.Players,
-            Images = images
+            Images = images.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) // Convert to regular Dictionary
         };
 
-        _games[lobbyCode] = game;
+        _games.TryAdd(lobbyCode, game);
         await clients.Group(lobbyCode).SendAsync("GameStarted", lobbyCode);
+        
+        Console.WriteLine($"[{lobbyCode}] Game started successfully");
     }
 
     private bool SetPlayerReady(Lobby lobby, string connectionId)
@@ -157,6 +212,7 @@ public class GameManager : IGameManager
         if (player != null && !player.IsReady)
         {
             player.IsReady = true;
+            Console.WriteLine($"Player {connectionId} is now ready in lobby {lobby.Code}");
             return true;
         }
         

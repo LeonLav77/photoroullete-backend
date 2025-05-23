@@ -4,9 +4,6 @@ using Vjezba.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IRoundManager, RoundManager>();
-builder.Services.AddScoped<IGameManager, GameManager>();
-
 AppConfig.Initialize(builder.Configuration);
 
 ServiceConfigurator.ConfigureServices(builder);
