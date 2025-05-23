@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    
+    <button id="broadcastButton" class="btn btn-primary">Send Broadcast</button>
+    <div id="status" class="mt-2 alert alert-info d-none"></div>
+    
+    <div id="messagesList" class="mt-3">
+        <h3>Messages:</h3>
+        <ul id="messages" class="list-group"></ul>
+    </div>
+    
+    <div id="connectedUsers" class="mt-3">
+        <h3>Connected Users:</h3>
+        <ul id="users" class="list-group"></ul>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Use CDN for SignalR instead of local reference -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    
+    <script>
+    document.getElementById("broadcastButton").addEventListener("click", function(event) {
+        event.preventDefault();
+        
+        // Get the hardcoded URL for the action
+        const url = '@Url.Action("SendBroadcast", "Home")';
+        
+        // Send AJAX request
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
+}

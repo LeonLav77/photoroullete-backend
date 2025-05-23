@@ -1,0 +1,13 @@
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\bin\Release\net8.0\Vjezba.Model.deps.json
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\bin\Release\net8.0\Vjezba.Model.dll
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\bin\Release\net8.0\Vjezba.Model.pdb
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.csproj.AssemblyReference.cache
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.AssemblyInfoInputs.cache
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.AssemblyInfo.cs
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.csproj.CoreCompileInputs.cache
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.sourcelink.json
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.dll
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\refint\Vjezba.Model.dll
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\Vjezba.Model.pdb
+C:\Users\Leon\Desktop\finalni\.NETLabosi\Vjezba\Vjezba.Model\obj\Release\net8.0\ref\Vjezba.Model.dll

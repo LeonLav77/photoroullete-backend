@@ -1,0 +1,57 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Vjezba.Web.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Vjezba.Web.nvit3ibaes.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\cities.xml",
+      "PackagePath": "staticwebassets\\data\\cities.xml"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\data\\clients.xml",
+      "PackagePath": "staticwebassets\\data\\clients.xml"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "PackagePath": "staticwebassets\\uploads\\clients\\1\\6ead02e0-b156-4cea-b483-e916c8681b55_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Leon\\Desktop\\finalni\\.NETLabosi\\Vjezba\\Vjezba.Web\\wwwroot\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg",
+      "PackagePath": "staticwebassets\\uploads\\clients\\1\\80e1243e-a6b5-46cb-bccc-d1b7814a7936_norwich-citys-milot-rashica-left-and-manchester-uniteds-harry-maguire-battle-for-the-ball-during-the-premier-league-match-at-old-trafford-manchester-picture-date-saturday-april-16-2022-2j4kap0.jpg"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Vjezba.Web.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Vjezba.Web.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.Vjezba.Web.props",
+      "PackagePath": "build\\Vjezba.Web.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Vjezba.Web.props",
+      "PackagePath": "buildMultiTargeting\\Vjezba.Web.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.Vjezba.Web.props",
+      "PackagePath": "buildTransitive\\Vjezba.Web.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
