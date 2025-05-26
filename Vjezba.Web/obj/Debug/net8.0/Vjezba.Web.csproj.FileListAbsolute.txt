@@ -1783,3 +1783,12 @@ C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\obj\Debug\net8.0\refint\V
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\obj\Debug\net8.0\Vjezba.Web.pdb
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\obj\Debug\net8.0\Vjezba.Web.genruntimeconfig.cache
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\obj\Debug\net8.0\ref\Vjezba.Web.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\firebase-service-account.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\FirebaseAdmin.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Google.Api.Gax.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Google.Api.Gax.Rest.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Google.Apis.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Google.Apis.Auth.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Google.Apis.Core.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\System.Management.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll

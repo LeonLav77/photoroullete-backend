@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Invite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Send Game Invite</h1>
+        
+        <form id="inviteForm">
+            <div class="form-group">
+                <label for="lobbyCode">Lobby Code:</label>
+                <input type="text" id="lobbyCode" name="lobbyCode" placeholder="Enter lobby code (e.g., GURDY)" required>
+            </div>
+            
+            <button type="submit" class="btn" id="inviteBtn">Send Invite</button>
+        </form>
+        
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('inviteForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const lobbyCode = document.getElementById('lobbyCode').value.trim();
+            const btn = document.getElementById('inviteBtn');
+            const messageDiv = document.getElementById('message');
+            
+            if (!lobbyCode) {
+                showMessage('Please enter a lobby code', 'error');
+                return;
+            }
+            
+            // Disable button and show loading
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            messageDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/fcm/sendinvite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `lobbyCode=${encodeURIComponent(lobbyCode)}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`Invite sent successfully! ${result.message}`, 'success');
+                    document.getElementById('lobbyCode').value = '';
+                } else {
+                    showMessage(`Error: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                // Re-enable button
+                btn.disabled = false;
+                btn.textContent = 'Send Invite';
+            }
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

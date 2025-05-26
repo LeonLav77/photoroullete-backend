@@ -1,3 +1,4 @@
+using Google.Apis.Requests.Parameters;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,14 +25,14 @@ public class LobbyManager : ILobbyManager
     {
         string lobbyCode;
         
-        // Check if a lobby code was provided in the request
-        string requestedLobbyCode = parsed["data"]?["lobbyCode"]?.ToString();
+        // Safely check if a lobby code was provided in the request
+        string requestedLobbyCode = parsed["lobbyCode"]?.ToString();
         
         if (!string.IsNullOrEmpty(requestedLobbyCode))
         {
             // Use the provided lobby code
-            lobbyCode = requestedLobbyCode.ToUpper(); // Ensure it's uppercase for consistency
-            
+            lobbyCode = requestedLobbyCode.ToUpper();
+
             // Check if lobby already exists
             if (_lobbies.ContainsKey(lobbyCode))
             {
@@ -44,7 +45,7 @@ public class LobbyManager : ILobbyManager
             // Generate a random lobby code if none provided
             Random random = new Random();
             string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            
+
             do
             {
                 lobbyCode = new string(Enumerable.Repeat(letters, 5)
@@ -66,7 +67,7 @@ public class LobbyManager : ILobbyManager
 
     public async Task JoinLobby(JObject parsed, string connectionId, IHubCallerClients clients, IGroupManager groups)
     {
-        string lobbyCode = parsed["data"]["lobbyCode"]?.ToString();
+        string lobbyCode = parsed["data"]["lobbyCode"]?.ToString()?.ToUpper();
         
         if (!_lobbies.ContainsKey(lobbyCode))
         {
