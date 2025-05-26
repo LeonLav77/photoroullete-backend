@@ -22,10 +22,36 @@ public class LobbyManager : ILobbyManager
 
     public async Task CreateLobby(JObject parsed, string connectionId, IHubCallerClients clients)
     {
-        Random random = new Random();
-        string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        string lobbyCode = new string(Enumerable.Repeat(letters, 5)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
+        string lobbyCode;
+        
+        // Check if a lobby code was provided in the request
+        string requestedLobbyCode = parsed["data"]?["lobbyCode"]?.ToString();
+        
+        if (!string.IsNullOrEmpty(requestedLobbyCode))
+        {
+            // Use the provided lobby code
+            lobbyCode = requestedLobbyCode.ToUpper(); // Ensure it's uppercase for consistency
+            
+            // Check if lobby already exists
+            if (_lobbies.ContainsKey(lobbyCode))
+            {
+                await clients.Caller.SendAsync("Error", "Lobby with this code already exists");
+                return;
+            }
+        }
+        else
+        {
+            // Generate a random lobby code if none provided
+            Random random = new Random();
+            string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            
+            do
+            {
+                lobbyCode = new string(Enumerable.Repeat(letters, 5)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+            }
+            while (_lobbies.ContainsKey(lobbyCode)); // Ensure uniqueness
+        }
 
         Lobby lobby = new Lobby
         {
