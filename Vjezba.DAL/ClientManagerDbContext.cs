@@ -17,6 +17,8 @@ namespace Vjezba.DAL
         public DbSet<Round> Rounds { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Lobby> Lobbies { get; set; }
+        public DbSet<FcmToken> FcmTokens { get; set; }
+
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +30,7 @@ namespace Vjezba.DAL
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Code).IsRequired().HasMaxLength(10);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')"); // SQLite syntax
-                
+
                 // Configure relationships
                 entity.HasMany(e => e.PlayersCollection)
                       .WithOne(p => p.Game)
@@ -57,7 +59,7 @@ namespace Vjezba.DAL
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Image).IsRequired();
                 entity.Property(e => e.CorrectAnswer).HasMaxLength(200);
-                
+
                 // Configure relationships
                 entity.HasMany(e => e.AnswersCollection)
                       .WithOne(a => a.Round)
