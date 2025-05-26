@@ -23,7 +23,7 @@ public class GameManager : IGameManager
     private static readonly ConcurrentDictionary<string, Game> _games = new ConcurrentDictionary<string, Game>();
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _playerBase64Images = 
         new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
-    private static readonly int ROUNDS = 3;
+    private static readonly int ROUNDS = 5;
     
     private readonly IRoundManager _roundManager;
 

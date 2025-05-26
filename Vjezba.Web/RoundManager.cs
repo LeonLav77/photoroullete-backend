@@ -13,7 +13,7 @@ public interface IRoundManager
 
 public class RoundManager : IRoundManager
 {
-    private static readonly int ROUNDS = 3;
+    private static readonly int ROUNDS = 5;
     private static readonly int ROUND_TIME = 5;
     
     // Add dependency injection for GameManager
