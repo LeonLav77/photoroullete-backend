@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Vjezba.Web.props" />
-</Project>

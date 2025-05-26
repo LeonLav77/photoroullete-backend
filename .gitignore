@@ -1,0 +1,7 @@
+all inside obj and bin directories
+bin/
+obj/
+Vjezba.Web/firebase-service-account.json
+
+
+
