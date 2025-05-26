@@ -1,7 +1,29 @@
-all inside obj and bin directories
+# Build results
 bin/
 obj/
-Vjezba.Web/firebase-service-account.json
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
 
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
+# Rider and VSCode
+.idea/
+.vscode/
 
+# ASP.NET temp files
+.vs/
+*.dbmdl
+
+# Entity Framework
+*.sql
+*.db
+
+# Secrets and configs
+firebase-service-account.json
