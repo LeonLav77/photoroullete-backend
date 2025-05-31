@@ -15,12 +15,10 @@ namespace Vjezba.Model
         [NotMapped]
         public List<string> Images { get; set; } = new List<string>();
 
-        // Store images as JSON string in database
         public string ImagesJson { get; set; } = "[]";
 
         public bool IsReady { get; set; } = false;
 
-        // Foreign key for Game
         public int? GameId { get; set; }
         public virtual Game Game { get; set; }
 
@@ -32,7 +30,6 @@ namespace Vjezba.Model
             Name = name;
         }
 
-        // Property to handle Images serialization
         [NotMapped]
         public List<string> ImagesProperty
         {

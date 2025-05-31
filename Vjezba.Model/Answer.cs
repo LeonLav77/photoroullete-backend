@@ -15,7 +15,6 @@ namespace Vjezba.Model
 
         public int Score { get; set; } = 0;
 
-        // Foreign key for Round
         public int RoundId { get; set; }
         public virtual Round Round { get; set; }
 

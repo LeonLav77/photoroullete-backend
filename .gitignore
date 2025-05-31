@@ -6,24 +6,17 @@ obj/
 *.pdb
 *.cache
 *.log
-
-# User-specific files
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
-
-# Rider and VSCode
 .idea/
 .vscode/
-
-# ASP.NET temp files
 .vs/
 *.dbmdl
-
-# Entity Framework
 *.sql
 *.db
-
-# Secrets and configs
 firebase-service-account.json
+Vjezba.Web.obj.*
+Vjezba.DAL.obj.*
+Vjezba.Model.obj.*

@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations; // Dodaj ovo
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace Vjezba.Model
