@@ -2,8 +2,180 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    TEST
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="hero-section p-5 mb-5 bg-primary text-white rounded-3">
+                <h1 class="display-3 fw-bold">📸 PhotoRoulette</h1>
+                <p class="lead fs-4">Photo Guessing Game Management System</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- What is PhotoRoulette Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="fas fa-camera text-primary"></i> What is PhotoRoulette?
+                    </h2>
+                    <p class="lead text-center mb-4">
+                        PhotoRoulette is an exciting multiplayer photo guessing game where players submit their photos and then compete to identify who took which picture!
+                    </p>
+                    
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="feature-box p-3">
+                                <i class="fas fa-upload fa-3x text-primary mb-3"></i>
+                                <h5>1. Submit Photos</h5>
+                                <p class="text-muted">Each player uploads their favorite photos to the game</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="feature-box p-3">
+                                <i class="fas fa-eye fa-3x text-success mb-3"></i>
+                                <h5>2. Guess & Match</h5>
+                                <p class="text-muted">View all photos and guess which player took each one</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="feature-box p-3">
+                                <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                                <h5>3. Score Points</h5>
+                                <p class="text-muted">Earn points for correct guesses and climb the leaderboard</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Stats Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar"></i> PhotoRoulette Statistics
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card p-4 border rounded h-100">
+                                <i class="fas fa-gamepad fa-3x text-primary mb-3"></i>
+                                <h3 class="fw-bold text-primary">@ViewBag.TotalGames</h3>
+                                <p class="text-muted">Total Games</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card p-4 border rounded h-100">
+                                <i class="fas fa-users fa-3x text-success mb-3"></i>
+                                <h3 class="fw-bold text-success">@ViewBag.TotalPlayers</h3>
+                                <p class="text-muted">Total Players</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card p-4 border rounded h-100">
+                                <i class="fas fa-images fa-3x text-warning mb-3"></i>
+                                <h3 class="fw-bold text-warning">@ViewBag.TotalPhotos</h3>
+                                <p class="text-muted">Photos Shared</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card p-4 border rounded h-100">
+                                <i class="fas fa-comments fa-3x text-info mb-3"></i>
+                                <h3 class="fw-bold text-info">@ViewBag.TotalAnswers</h3>
+                                <p class="text-muted">Total Answers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browse Games Section -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="card border-primary">
+                <div class="card-body p-5">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <h3 class="card-title">
+                            <i class="fas fa-search text-primary"></i> Explore Game History
+                        </h3>
+                        <p class="card-text lead">
+                            Browse through completed PhotoRoulette games and review exciting moments!
+                        </p>
+                        <div class="mt-4">
+                            <a href="/Game" class="btn btn-primary btn-lg">
+                                <i class="fas fa-list"></i> View All Games
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <h3 class="card-title">
+                            <i class="fas fa-lock text-warning"></i> Login Required
+                        </h3>
+                        <p class="card-text lead">
+                            Please log in to access game history, view detailed statistics, and manage PhotoRoulette games.
+                        </p>
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Guest Access:</strong> You can view basic statistics above, but full features require authentication.
+                        </div>
+                        <div class="mt-4">
+                            <a href="/Identity/Account/Login" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                            <a href="/Identity/Account/Register" class="btn btn-outline-primary btn-lg ms-2">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.stat-card {
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: #007bff !important;
+}
+</style>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vjezba.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6b5d7714c212848918b006e4468603d100e8219")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63eba233548389db7943f1a880757b3490ad5ee0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vjezba.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vjezba.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

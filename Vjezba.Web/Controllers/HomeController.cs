@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Diagnostics;
-using Vjezba.Model;
-using Vjezba.Web;  // Your RouletteHub namespace
+using Microsoft.EntityFrameworkCore;
+using Vjezba.DAL;
 
 namespace Vjezba.Web.Controllers
 {
@@ -19,8 +18,32 @@ namespace Vjezba.Web.Controllers
             _hubContext = hubContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            try
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
+                optionsBuilder.UseSqlite("Data Source=/var/www/vjezba/ClientManager.db");
+
+                using var context = new ClientManagerDbContext(optionsBuilder.Options);
+
+                // Calculate simple statistics
+                ViewBag.TotalGames = await context.Games.CountAsync();
+                ViewBag.TotalPlayers = await context.Players.CountAsync();
+                ViewBag.TotalPhotos = await context.Rounds.CountAsync();
+                ViewBag.TotalAnswers = await context.Answers.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calculating statistics for home page");
+                
+                // Provide default values if database is unavailable
+                ViewBag.TotalGames = "N/A";
+                ViewBag.TotalPlayers = "N/A";
+                ViewBag.TotalPhotos = "N/A";
+                ViewBag.TotalAnswers = "N/A";
+            }
+
             return View();
         }
     }

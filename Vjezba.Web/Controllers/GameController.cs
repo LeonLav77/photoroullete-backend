@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Vjezba.DAL;
 using Vjezba.Model;
 using Vjezba.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Vjezba.Web.Controllers
 {
@@ -44,6 +45,7 @@ namespace Vjezba.Web.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> GameFlow(int? id)
         {
             if (id == null)
@@ -88,8 +90,9 @@ namespace Vjezba.Web.Controllers
                 return NotFound();
             }
         }
-        
+
         [HttpGet]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> EditGame(int id)
         {
             // Validate ID using service
@@ -116,8 +119,8 @@ namespace Vjezba.Web.Controllers
                 var gameValidation = _validationService.ValidateGameData(game, id);
                 if (!gameValidation.IsValid)
                 {
-                    return gameValidation.StatusCode == 404 
-                        ? NotFound(gameValidation.ErrorMessage) 
+                    return gameValidation.StatusCode == 404
+                        ? NotFound(gameValidation.ErrorMessage)
                         : BadRequest(gameValidation.ErrorMessage);
                 }
 
@@ -148,6 +151,7 @@ namespace Vjezba.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> SaveGameChanges([FromBody] SaveGameChangesRequest request)
         {
             // Validate all answer scores first

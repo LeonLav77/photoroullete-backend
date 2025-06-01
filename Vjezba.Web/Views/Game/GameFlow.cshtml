@@ -3,14 +3,69 @@
 @{
     ViewData["Title"] = $"Game Flow - {Model.Code}";
     var playerScores = ViewBag.PlayerScores as Dictionary<string, int>;
+    bool isAdmin = User.IsInRole("Admin");
+    bool isManager = User.IsInRole("Manager");
+    bool hasEditAccess = isAdmin; // Only admins can edit
+    bool hasViewAccess = isManager || isAdmin; // Managers and admins can view details
+}
+
+@* Check if user has access to view this page *@
+@if (!hasViewAccess)
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-danger text-center">
+                    <i class="fas fa-lock fa-3x mb-3"></i>
+                    <h4>Access Denied</h4>
+                    <p>You don't have permission to view game details. Please contact an administrator if you need access.</p>
+                    <hr>
+                    <a href="@Url.Action("Index", "Game")" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Games List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    return;
 }
 
 <div class="container">
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h2>Game: @Model.Code</h2>
-                    <p>Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("Index", "Game")">
+                                    <i class="fas fa-gamepad"></i> Games
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">@Model.Code</li>
+                        </ol>
+                    </nav>
+                    
+                    <div class="d-flex align-items-center mb-2">
+                        <h2 class="me-3">
+                            <i class="fas fa-dice text-primary"></i> Game: @Model.Code
+                        </h2>
+                        <span class="badge bg-info">
+                            @if (isAdmin)
+                            {
+                                <i class="fas fa-crown"></i>
+                            }
+                            else if (isManager)
+                            {
+                                <i class="fas fa-user-tie"></i>
+                            }
+                        </span>
+                    </div>
+                    
+                    <p class="text-muted">
+                        <i class="fas fa-calendar"></i> Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                    </p>
                     
                     <!-- Display Excitement Level -->
                     <p>
@@ -18,220 +73,364 @@
                         @{
                             var excitementBadgeClass = "";
                             var excitementText = "";
+                            var excitementIcon = "";
                             
                             switch (Model.Excitement)
                             {
                                 case Vjezba.Model.GameExcitement.VeryBoring:
                                     excitementBadgeClass = "badge bg-danger";
                                     excitementText = "Very Boring";
+                                    excitementIcon = "😴";
                                     break;
                                 case Vjezba.Model.GameExcitement.Boring:
-                                    excitementBadgeClass = "badge bg-warning";
+                                    excitementBadgeClass = "badge bg-warning text-dark";
                                     excitementText = "Boring";
+                                    excitementIcon = "😐";
                                     break;
                                 case Vjezba.Model.GameExcitement.Average:
                                     excitementBadgeClass = "badge bg-secondary";
                                     excitementText = "Average";
+                                    excitementIcon = "🙂";
                                     break;
                                 case Vjezba.Model.GameExcitement.Interesting:
                                     excitementBadgeClass = "badge bg-info";
                                     excitementText = "Interesting";
+                                    excitementIcon = "😊";
                                     break;
                                 case Vjezba.Model.GameExcitement.Exciting:
                                     excitementBadgeClass = "badge bg-success";
                                     excitementText = "Exciting";
+                                    excitementIcon = "🤩";
                                     break;
                                 case Vjezba.Model.GameExcitement.VeryExciting:
                                     excitementBadgeClass = "badge bg-primary";
                                     excitementText = "Very Exciting";
+                                    excitementIcon = "🔥";
                                     break;
                                 default:
                                     excitementBadgeClass = "badge bg-secondary";
                                     excitementText = "Average";
+                                    excitementIcon = "🙂";
                                     break;
                             }
                         }
-                        <span class="@excitementBadgeClass">@excitementText</span>
+                        <span class="@excitementBadgeClass fs-6">@excitementIcon @excitementText</span>
                     </p>
                 </div>
-                <div>
-                    <a href="@Url.Action("EditGame", "Game", new { id = Model.Id })" class="btn btn-warning me-2">
-                        <i class="fas fa-edit"></i> Edit Game
-                    </a>
-                    <button id="exportGameBtn" class="btn btn-success" data-game-id="@Model.Id">
-                        <i class="fas fa-download"></i> Export JSON
-                    </button>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex flex-column gap-2">
+                    @if (hasEditAccess)
+                    {
+                        <a href="@Url.Action("EditGame", "Game", new { id = Model.Id })" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Game
+                        </a>
+                        
+                        <button id="exportGameBtn" class="btn btn-success" data-game-id="@Model.Id">
+                            <i class="fas fa-download"></i> Export JSON
+                        </button>
+                    }
+                    else if (isManager)
+                    {
+                        <div class="alert alert-info mb-0 text-center">
+                            <small>
+                                <i class="fas fa-info-circle"></i><br>
+                                Manager View Only<br>
+                                <span class="text-muted">No edit permissions</span>
+                            </small>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <h4>Players (@Model.PlayersCollection.Count)</h4>
-        <div class="row">
-            @{
-                var playersWithScores = Model.PlayersCollection.Select(player => new {
-                    Player = player,
-                    Score = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
-                        ? playerScores[player.ConnectionId] : 0
-                }).OrderByDescending(p => p.Score).ToList();
-            }
-            
-            @for (int i = 0; i < playersWithScores.Count; i++)
-            {
-                var playerData = playersWithScores[i];
-                var borderClass = "";
-                var rankText = "";
-                
-                switch (i)
-                {
-                    case 0:
-                        borderClass = "border-warning border-3"; // Gold
-                        rankText = "🥇 1st";
-                        break;
-                    case 1:
-                        borderClass = "border-secondary border-3"; // Silver
-                        rankText = "🥈 2nd";
-                        break;
-                    case 2:
-                        borderClass = "border-danger border-3"; // Bronze (using red as bronze)
-                        rankText = "🥉 3rd";
-                        break;
-                    case 3:
-                        borderClass = "border-info border-3"; // Light blue for 4th
-                        rankText = "🏅 4th";
-                        break;
-                    default:
-                        borderClass = "border-light";
-                        rankText = $"{i + 1}th";
-                        break;
-                }
-                
-                <div class="col-md-3 mb-2">
-                    <div class="card @borderClass">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="mb-0">@playerData.Player.Name</h6>
-                                <small class="text-muted">@rankText</small>
-                            </div>
-                            <p class="mb-0"><strong>Total Score: @playerData.Score</strong></p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
-    <!-- Rounds -->
-    <div class="row">
+    <!-- Players Section -->
+    <div class="row mb-4">
         <div class="col-12">
-            <h4>Rounds (@Model.RoundsCollection.Count)</h4>
-            @{
-                var sortedRounds = Model.RoundsCollection.OrderBy(r => r.Number).ToList();
-            }
-            @foreach (var round in sortedRounds)
-            {
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5>Round @round.Number</h5>
-                        @if (!string.IsNullOrEmpty(round.CorrectAnswer))
-                        {
-                            var correctAnswerPlayerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == round.CorrectAnswer)?.Name ?? "Unknown";
-                            
-                            <p class="mb-0">Correct Answer: @correctAnswerPlayerName</p>
-                        }
-                    </div>
-                    <div class="card-body">
-                        @if (!string.IsNullOrEmpty(round.Image))
-                        {
-                            <div class="mb-3">
-                                <img src="data:image/jpeg;base64,@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
-                            </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-users"></i> Players (@Model.PlayersCollection.Count)
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @{
+                            var playersWithScores = Model.PlayersCollection.Select(player => new {
+                                Player = player,
+                                Score = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
+                                    ? playerScores[player.ConnectionId] : 0
+                            }).OrderByDescending(p => p.Score).ToList();
                         }
                         
-                        <h6>Answers (@round.AnswersCollection.Count)</h6>
-                        @if (round.AnswersCollection.Any())
+                        @for (int i = 0; i < playersWithScores.Count; i++)
                         {
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Player</th>
-                                        <th>Answer</th>
-                                        <th>Score</th>
-                                        <th>Time Left</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        var sortedAnswers = round.AnswersCollection.OrderByDescending(a => a.Score).ToList();
-                                    }
-                                    @foreach (var answer in sortedAnswers)
-                                    {
-                                        var playerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.Player)?.Name ?? answer.Player;
-                                        var playersAnswerAsName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.PlayersAnswer)?.Name;
-
-                                        <tr>
-                                            <td>@playerName</td>
-                                            <td>@playersAnswerAsName</td>
-                                            <td>@answer.Score</td>
-                                            <td>@answer.TimeRemaining s</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                        else
-                        {
-                            <p class="text-muted">No answers for this round.</p>
+                            var playerData = playersWithScores[i];
+                            var borderClass = "";
+                            var rankText = "";
+                            var rankIcon = "";
+                            
+                            switch (i)
+                            {
+                                case 0:
+                                    borderClass = "border-warning border-3"; // Gold
+                                    rankText = "1st Place";
+                                    rankIcon = "🥇";
+                                    break;
+                                case 1:
+                                    borderClass = "border-secondary border-3"; // Silver
+                                    rankText = "2nd Place";
+                                    rankIcon = "🥈";
+                                    break;
+                                case 2:
+                                    borderClass = "border-danger border-3"; // Bronze
+                                    rankText = "3rd Place";
+                                    rankIcon = "🥉";
+                                    break;
+                                case 3:
+                                    borderClass = "border-info border-3"; // 4th
+                                    rankText = "4th Place";
+                                    rankIcon = "🏅";
+                                    break;
+                                default:
+                                    borderClass = "border-light";
+                                    rankText = $"{i + 1}th Place";
+                                    rankIcon = "👤";
+                                    break;
+                            }
+                            
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                <div class="card @borderClass h-100">
+                                    <div class="card-body text-center">
+                                        <div class="mb-2">
+                                            <span style="font-size: 2rem;">@rankIcon</span>
+                                        </div>
+                                        <h6 class="card-title mb-1">@playerData.Player.Name</h6>
+                                        <small class="text-muted d-block mb-2">@rankText</small>
+                                        <span class="badge bg-primary fs-6">
+                                            @playerData.Score points
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
-            }
+            </div>
+        </div>
+    </div>
+
+    <!-- Rounds Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-layer-group"></i> Rounds (@Model.RoundsCollection.Count)
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @{
+                        var sortedRounds = Model.RoundsCollection.OrderBy(r => r.Number).ToList();
+                    }
+                    
+                    @if (!sortedRounds.Any())
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-layer-group fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No rounds played yet</h5>
+                            <p class="text-muted">This game hasn't started or has no completed rounds.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var round in sortedRounds)
+                        {
+                            <div class="card mb-3 border-start border-4 border-primary">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-camera text-primary"></i> Round @round.Number
+                                    </h5>
+                                    @if (!string.IsNullOrEmpty(round.CorrectAnswer))
+                                    {
+                                        var correctAnswerPlayerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == round.CorrectAnswer)?.Name ?? "Unknown";
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Correct: @correctAnswerPlayerName
+                                        </span>
+                                    }
+                                </div>
+                                <div class="card-body">
+                                    @if (!string.IsNullOrEmpty(round.Image))
+                                    {
+                                        <div class="text-center mb-4">
+                                            <img src="data:image/jpeg;base64,@round.Image" 
+                                                 alt="Round @round.Number Image" 
+                                                 class="img-fluid rounded shadow-sm" 
+                                                 style="max-height: 300px;" />
+                                        </div>
+                                    }
+                                    
+                                    <h6 class="border-bottom pb-2 mb-3">
+                                        <i class="fas fa-comments text-info"></i> 
+                                        Player Answers (@round.AnswersCollection.Count)
+                                    </h6>
+                                    
+                                    @if (round.AnswersCollection.Any())
+                                    {
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th><i class="fas fa-user"></i> Player</th>
+                                                        <th><i class="fas fa-reply"></i> Answer</th>
+                                                        <th><i class="fas fa-star"></i> Score</th>
+                                                        <th><i class="fas fa-clock"></i> Time Left</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        var sortedAnswers = round.AnswersCollection.OrderByDescending(a => a.Score).ToList();
+                                                    }
+                                                    @foreach (var answer in sortedAnswers)
+                                                    {
+                                                        var playerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.Player)?.Name ?? answer.Player;
+                                                        var playersAnswerAsName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.PlayersAnswer)?.Name ?? "Unknown";
+                                                        var isCorrect = answer.PlayersAnswer == round.CorrectAnswer;
+
+                                                        <tr class="@(isCorrect ? "table-success" : "")">
+                                                            <td>
+                                                                <strong>@playerName</strong>
+                                                                @if (isCorrect)
+                                                                {
+                                                                    <i class="fas fa-check-circle text-success ms-1" title="Correct answer"></i>
+                                                                }
+                                                            </td>
+                                                            <td>@playersAnswerAsName</td>
+                                                            <td>
+                                                                <span class="badge @(answer.Score > 0 ? "bg-success" : "bg-secondary")">
+                                                                    @answer.Score
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <small class="text-muted">@answer.TimeRemaining s</small>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center py-3">
+                                            <i class="fas fa-comments-slash fa-2x text-muted mb-2"></i>
+                                            <p class="text-muted mb-0">No answers submitted for this round</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<script>
-document.getElementById('exportGameBtn').addEventListener('click', function() {
-    const gameId = this.getAttribute('data-game-id');
-    const button = this;
-    
-    // Disable button and show loading
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
-    
-    fetch(`/api/Game/export/${gameId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Export failed');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            console.log('Export successful:', blob);
-            // Create download link
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `game_${@Html.Raw(Json.Serialize(Model.Code))}_export.json`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
+@* Export functionality - Admin only *@
+@if (hasEditAccess)
+{
+    <script>
+        document.getElementById('exportGameBtn').addEventListener('click', function() {
+            const gameId = this.getAttribute('data-game-id');
+            const button = this;
             
-            // Reset button
-            button.disabled = false;
-            button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
-        })
-        .catch(error => {
-            console.error('Export error:', error);
-            alert('Failed to export game. Please try again.');
+            // Disable button and show loading
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
             
-            // Reset button
-            button.disabled = false;
-            button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
+            fetch(`/api/Game/export/${gameId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Export failed');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    console.log('Export successful:', blob);
+                    // Create download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `game_${@Html.Raw(Json.Serialize(Model.Code))}_export.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Reset button
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
+                    
+                    // Show success message
+                    showAlert('Game exported successfully!', 'success');
+                })
+                .catch(error => {
+                    console.error('Export error:', error);
+                    showAlert('Failed to export game. Please try again.', 'danger');
+                    
+                    // Reset button
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
+                });
         });
-});
-</script>
+        
+        // Utility function to show alerts
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+    </script>
+}
+
+<style>
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .border-start {
+        border-left-width: 4px !important;
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        text-decoration: underline;
+    }
+</style>
