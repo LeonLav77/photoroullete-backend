@@ -16,6 +16,9 @@ namespace Vjezba.Infrastructure
     {
         public static void MapRoutes(WebApplication app)
         {
+            // Game API routes with constraints
+            GameApiRoutes(app);
+
             // Areas route
             Area(app, "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
@@ -23,21 +26,13 @@ namespace Vjezba.Infrastructure
             Default(app, "{controller=Home}/{action=Index}/{id?}");
         }
 
-        // Helper methods to make route configuration more Laravel-like
-        
-        public static void Get(WebApplication app, string name, string pattern, 
-            string controller, string action, object? defaults = null, object? constraints = null)
+        private static void GameApiRoutes(WebApplication app)
         {
-            var routeBuilder = app.MapControllerRoute(
-                name: name,
-                pattern: pattern,
-                defaults: MergeDefaults(controller, action, defaults)
+            app.MapControllerRoute(
+                name: "game_import",
+                pattern: "api/game/import/{gameCode:regex(^[a-zA-Z0-9_-]+$)}",
+                defaults: new { controller = "GameApi", action = "ImportGame" }
             );
-
-            if (constraints != null)
-            {
-                routeBuilder.WithDisplayName(name);
-            }
         }
 
         public static void Area(WebApplication app, string pattern)
@@ -56,24 +51,5 @@ namespace Vjezba.Infrastructure
             );
         }
 
-        private static object MergeDefaults(string controller, string action, object? additionalDefaults)
-        {
-            var defaults = new
-            {
-                controller = controller,
-                action = action
-            };
-
-            // If no additional defaults, just return the base defaults
-            if (additionalDefaults == null)
-            {
-                return defaults;
-            }
-
-            // Otherwise, we'd need to merge the properties
-            // For simplicity in this example, we're just returning the base defaults
-            // In a real implementation, you'd use reflection to merge the objects
-            return defaults;
-        }
     }
 }

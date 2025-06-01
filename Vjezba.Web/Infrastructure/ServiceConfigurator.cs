@@ -76,23 +76,6 @@ namespace Vjezba.Infrastructure
 
                     options.Events = new OAuthEvents
                     {
-                        OnRedirectToAuthorizationEndpoint = context =>
-                        {
-                            // Get the PublicUrl from AppConfig
-                            var publicUrl = AppConfig.PublicUrl;
-
-                            var uri = new Uri(context.RedirectUri);
-                            var queryString = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                            queryString.Set("redirect_uri", $"{publicUrl}/signin-google");
-
-                            var uriBuilder = new UriBuilder(uri)
-                            {
-                                Query = queryString.ToString()
-                            };
-
-                            context.Response.Redirect(uriBuilder.ToString());
-                            return Task.CompletedTask;
-                        },
                         OnRemoteFailure = context =>
                         {
                             context.Response.Redirect("/Home/Error?message=" + context.Failure?.Message);

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vjezba.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7e8baa2e18747533717685226bf4413c97583b6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6b5d7714c212848918b006e4468603d100e8219")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vjezba.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vjezba.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

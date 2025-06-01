@@ -23,16 +23,5 @@ namespace Vjezba.Web.Controllers
         {
             return View();
         }
-
-        // POST /home/sendbroadcast
-        [HttpPost]
-        public async Task<IActionResult> SendBroadcast()
-        {
-            var message = "Hello from the server!";
-            await _hubContext.Clients.All.SendAsync("StartRoom", message);
-            
-            // Return a result that won't reload the page
-            return Json(new { success = true });
-        }
     }
 }

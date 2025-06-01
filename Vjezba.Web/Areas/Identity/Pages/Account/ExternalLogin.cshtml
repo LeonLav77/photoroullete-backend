@@ -31,15 +31,10 @@
                 }
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.OIB"></label>
-                <input asp-for="Input.OIB" class="form-control" />
-                <span asp-validation-for="Input.OIB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.JMBG"></label>
-                <input asp-for="Input.JMBG" class="form-control" />
-                <span asp-validation-for="Input.JMBG" class="text-danger"></span>
+            <div class="form-group form-check">
+                <input asp-for="Input.WillInvitePlayers" class="form-check-input" type="checkbox" />
+                <label asp-for="Input.WillInvitePlayers" class="form-check-label"></label>
+                <span asp-validation-for="Input.WillInvitePlayers" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>

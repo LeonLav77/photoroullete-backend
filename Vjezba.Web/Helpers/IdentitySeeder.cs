@@ -37,8 +37,7 @@ namespace Vjezba.Web.Helpers
                         UserName = adminEmail,
                         Email = adminEmail,
                         EmailConfirmed = true,
-                        OIB = "12345678901",
-                        JMBG = "1234567890123"
+                        WillInvitePlayers = true
                     };
 
                     var result = await userManager.CreateAsync(adminUser, "Admin123!");
@@ -57,8 +56,7 @@ namespace Vjezba.Web.Helpers
                         UserName = managerEmail,
                         Email = managerEmail,
                         EmailConfirmed = true,
-                        OIB = "23456789012",
-                        JMBG = "2345678901234"
+                        WillInvitePlayers = false
                     };
 
                     var result = await userManager.CreateAsync(managerUser, "Manager123!");

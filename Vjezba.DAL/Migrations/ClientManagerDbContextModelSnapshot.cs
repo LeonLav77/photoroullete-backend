@@ -205,10 +205,6 @@ namespace Vjezba.DAL.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("JMBG")
-                        .HasMaxLength(13)
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 
@@ -221,10 +217,6 @@ namespace Vjezba.DAL.Migrations
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OIB")
-                        .HasMaxLength(11)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
@@ -245,6 +237,9 @@ namespace Vjezba.DAL.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("WillInvitePlayers")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -293,6 +288,9 @@ namespace Vjezba.DAL.Migrations
                         .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int>("CurrentRound")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Excitement")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("FinishedAt")

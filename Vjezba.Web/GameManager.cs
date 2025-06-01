@@ -19,7 +19,6 @@ public interface IGameManager
 
 public class GameManager : IGameManager
 {
-    // Use ConcurrentDictionary for thread safety in cloud environments
     private static readonly ConcurrentDictionary<string, Game> _games = new ConcurrentDictionary<string, Game>();
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _playerBase64Images = 
         new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
@@ -27,10 +26,9 @@ public class GameManager : IGameManager
     
     private readonly IRoundManager _roundManager;
 
-    // Simple constructor without DI
     public GameManager()
     {
-        _roundManager = new RoundManager(this); // Pass 'this' to RoundManager
+        _roundManager = new RoundManager(this);
     }
 
     public async Task PrepareGame(JObject parsed, IHubCallerClients clients)
@@ -41,9 +39,8 @@ public class GameManager : IGameManager
         if (lobby == null) return;
 
         var randomizedImages = GetRandomizedImages(lobby);
-        await SendImageRequestsToPlayers(randomizedImages, clients);
 
-        Console.WriteLine($"[{startLobbyCode}] Image requests sent to players");
+        await SendImageRequestsToPlayers(randomizedImages, clients);
     }
 
     public async Task TurnOverImages(JObject parsed, string connectionId, IHubCallerClients clients, IGroupManager groups)
@@ -131,8 +128,6 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
 
     public async Task SaveGameToDatabase(string lobbyCode)
     {
-        Console.WriteLine($"[{lobbyCode}] SaveGameToDatabase: Starting save process");
-        
         if (!_games.TryGetValue(lobbyCode, out var game))
         {
             Console.WriteLine($"[{lobbyCode}] Game not found for saving to database");
@@ -143,16 +138,14 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
 
         try
         {
-            // Create DbContext here when needed
             var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
-            // Use your SQLite connection string instead
+
             optionsBuilder.UseSqlite("Data Source=ClientManager.db");
             
             using var dbContext = new ClientManagerDbContext(optionsBuilder.Options);
 
             Console.WriteLine($"[{lobbyCode}] DbContext created successfully");
 
-            // Create a new game entity for database
             var gameEntity = new Game
             {
                 Code = game.Code,
@@ -161,9 +154,6 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
                 FinishedAt = DateTime.UtcNow
             };
 
-            Console.WriteLine($"[{lobbyCode}] Game entity created: {gameEntity.Code}");
-
-            // Add players to the game
             foreach (var player in game.Players)
             {
                 var playerEntity = new Player(player.ConnectionId, player.Name)
@@ -171,22 +161,21 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
                     ImagesProperty = player.Images,
                     IsReady = player.IsReady
                 };
+
                 gameEntity.PlayersCollection.Add(playerEntity);
-                Console.WriteLine($"[{lobbyCode}] Added player: {player.Name}");
             }
 
-            // Add rounds and answers to the game
             foreach (var round in game.Rounds)
             {
-                // Get the actual base64 image for this round
+                // Od image keya nadi odgovarajući base64 string
                 string imageData = round.Image;
+
                 if (_playerBase64Images.TryGetValue(lobbyCode, out var lobbyImages))
                 {
-                    // Find the base64 image that matches this round's image
                     var imageEntry = lobbyImages.FirstOrDefault(kvp => kvp.Key == round.Image);
                     if (!string.IsNullOrEmpty(imageEntry.Key))
                     {
-                        imageData = imageEntry.Key; // This should be the base64 string
+                        imageData = imageEntry.Key;
                     }
                 }
 
@@ -194,7 +183,7 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
                 {
                     Number = round.Number,
                     Duration = round.Duration,
-                    Image = imageData, // Store the base64 image data
+                    Image = imageData,
                     CorrectAnswer = round.CorrectAnswer
                 };
 
@@ -204,7 +193,6 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
                     Console.WriteLine($"[{lobbyCode}] Image preview: {imageData.Substring(0, Math.Min(50, imageData.Length))}...");
                 }
 
-                // Add answers to the round
                 foreach (var answer in round.Answers)
                 {
                     var answerEntity = new Answer
@@ -214,26 +202,19 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
                         TimeRemaining = answer.TimeRemaining,
                         Score = answer.Score
                     };
+
                     roundEntity.AnswersCollection.Add(answerEntity);
-                    Console.WriteLine($"[{lobbyCode}] Added answer from {answer.Player}: {answer.PlayersAnswer}");
                 }
 
                 gameEntity.RoundsCollection.Add(roundEntity);
             }
 
-            Console.WriteLine($"[{lobbyCode}] About to save to database...");
-
-            // Save to database
             dbContext.Games.Add(gameEntity);
+
             await dbContext.SaveChangesAsync();
 
-            Console.WriteLine($"[{lobbyCode}] Game successfully saved to database with ID: {gameEntity.Id}");
-
-            // Clean up in-memory game data
             _games.TryRemove(lobbyCode, out _);
             _playerBase64Images.TryRemove(lobbyCode, out _);
-
-            Console.WriteLine($"[{lobbyCode}] In-memory game data cleaned up");
         }
         catch (Exception ex)
         {

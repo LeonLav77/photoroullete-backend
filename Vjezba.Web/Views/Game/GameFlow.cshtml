@@ -6,40 +6,123 @@
 }
 
 <div class="container">
-    <!-- Game Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2>Game: @Model.Code</h2>
-            <p>Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
-            @if (Model.FinishedAt.HasValue)
-            {
-                <p>Finished: @Model.FinishedAt.Value.ToString("yyyy-MM-dd HH:mm")</p>
-            }
-        </div>
-    </div>
-
-    <!-- Players -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h4>Players (@Model.PlayersCollection.Count)</h4>
-            <div class="row">
-                @foreach (var player in Model.PlayersCollection)
-                {
-                    var playerScore = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
-                        ? playerScores[player.ConnectionId] : 0;
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2>Game: @Model.Code</h2>
+                    <p>Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
                     
-                    <div class="col-md-3 mb-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6>@player.Name</h6>
-                                <p>Total Score: @playerScore</p>
-                            </div>
-                        </div>
-                    </div>
-                }
+                    <!-- Display Excitement Level -->
+                    <p>
+                        <strong>Excitement Level:</strong> 
+                        @{
+                            var excitementBadgeClass = "";
+                            var excitementText = "";
+                            
+                            switch (Model.Excitement)
+                            {
+                                case Vjezba.Model.GameExcitement.VeryBoring:
+                                    excitementBadgeClass = "badge bg-danger";
+                                    excitementText = "Very Boring";
+                                    break;
+                                case Vjezba.Model.GameExcitement.Boring:
+                                    excitementBadgeClass = "badge bg-warning";
+                                    excitementText = "Boring";
+                                    break;
+                                case Vjezba.Model.GameExcitement.Average:
+                                    excitementBadgeClass = "badge bg-secondary";
+                                    excitementText = "Average";
+                                    break;
+                                case Vjezba.Model.GameExcitement.Interesting:
+                                    excitementBadgeClass = "badge bg-info";
+                                    excitementText = "Interesting";
+                                    break;
+                                case Vjezba.Model.GameExcitement.Exciting:
+                                    excitementBadgeClass = "badge bg-success";
+                                    excitementText = "Exciting";
+                                    break;
+                                case Vjezba.Model.GameExcitement.VeryExciting:
+                                    excitementBadgeClass = "badge bg-primary";
+                                    excitementText = "Very Exciting";
+                                    break;
+                                default:
+                                    excitementBadgeClass = "badge bg-secondary";
+                                    excitementText = "Average";
+                                    break;
+                            }
+                        }
+                        <span class="@excitementBadgeClass">@excitementText</span>
+                    </p>
+                </div>
+                <div>
+                    <a href="@Url.Action("EditGame", "Game", new { id = Model.Id })" class="btn btn-warning me-2">
+                        <i class="fas fa-edit"></i> Edit Game
+                    </a>
+                    <button id="exportGameBtn" class="btn btn-success" data-game-id="@Model.Id">
+                        <i class="fas fa-download"></i> Export JSON
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h4>Players (@Model.PlayersCollection.Count)</h4>
+        <div class="row">
+            @{
+                var playersWithScores = Model.PlayersCollection.Select(player => new {
+                    Player = player,
+                    Score = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
+                        ? playerScores[player.ConnectionId] : 0
+                }).OrderByDescending(p => p.Score).ToList();
+            }
+            
+            @for (int i = 0; i < playersWithScores.Count; i++)
+            {
+                var playerData = playersWithScores[i];
+                var borderClass = "";
+                var rankText = "";
+                
+                switch (i)
+                {
+                    case 0:
+                        borderClass = "border-warning border-3"; // Gold
+                        rankText = "🥇 1st";
+                        break;
+                    case 1:
+                        borderClass = "border-secondary border-3"; // Silver
+                        rankText = "🥈 2nd";
+                        break;
+                    case 2:
+                        borderClass = "border-danger border-3"; // Bronze (using red as bronze)
+                        rankText = "🥉 3rd";
+                        break;
+                    case 3:
+                        borderClass = "border-info border-3"; // Light blue for 4th
+                        rankText = "🏅 4th";
+                        break;
+                    default:
+                        borderClass = "border-light";
+                        rankText = $"{i + 1}th";
+                        break;
+                }
+                
+                <div class="col-md-3 mb-2">
+                    <div class="card @borderClass">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">@playerData.Player.Name</h6>
+                                <small class="text-muted">@rankText</small>
+                            </div>
+                            <p class="mb-0"><strong>Total Score: @playerData.Score</strong></p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
     <!-- Rounds -->
     <div class="row">
@@ -55,23 +138,16 @@
                         <h5>Round @round.Number</h5>
                         @if (!string.IsNullOrEmpty(round.CorrectAnswer))
                         {
-                            <p class="mb-0">Correct Answer: @round.CorrectAnswer</p>
+                            var correctAnswerPlayerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == round.CorrectAnswer)?.Name ?? "Unknown";
+                            
+                            <p class="mb-0">Correct Answer: @correctAnswerPlayerName</p>
                         }
                     </div>
                     <div class="card-body">
                         @if (!string.IsNullOrEmpty(round.Image))
                         {
                             <div class="mb-3">
-                                @if (round.Image.StartsWith("data:image"))
-                                {
-                                    <!-- Already a proper data URL -->
-                                    <img src="@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
-                                }
-                                else
-                                {
-                                    <!-- Base64 string that needs data URL prefix -->
-                                    <img src="data:image/jpeg;base64,@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
-                                }
+                                <img src="data:image/jpeg;base64,@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
                             </div>
                         }
                         
@@ -93,9 +169,12 @@
                                     }
                                     @foreach (var answer in sortedAnswers)
                                     {
+                                        var playerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.Player)?.Name ?? answer.Player;
+                                        var playersAnswerAsName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.PlayersAnswer)?.Name;
+
                                         <tr>
-                                            <td>@answer.Player</td>
-                                            <td>@answer.PlayersAnswer</td>
+                                            <td>@playerName</td>
+                                            <td>@playersAnswerAsName</td>
                                             <td>@answer.Score</td>
                                             <td>@answer.TimeRemaining s</td>
                                         </tr>
@@ -113,3 +192,46 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('exportGameBtn').addEventListener('click', function() {
+    const gameId = this.getAttribute('data-game-id');
+    const button = this;
+    
+    // Disable button and show loading
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+    
+    fetch(`/api/Game/export/${gameId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Export failed');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            console.log('Export successful:', blob);
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `game_${@Html.Raw(Json.Serialize(Model.Code))}_export.json`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            // Reset button
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
+        })
+        .catch(error => {
+            console.error('Export error:', error);
+            alert('Failed to export game. Please try again.');
+            
+            // Reset button
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-download"></i> Export JSON';
+        });
+});
+</script>

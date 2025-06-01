@@ -1188,9 +1188,16 @@ C:\Users\Leon\Desktop\qwewqe\Vjezba.Web\obj\Debug\net8.0\refint\Vjezba.Web.dll
 C:\Users\Leon\Desktop\qwewqe\Vjezba.Web\obj\Debug\net8.0\Vjezba.Web.pdb
 C:\Users\Leon\Desktop\qwewqe\Vjezba.Web\obj\Debug\net8.0\Vjezba.Web.genruntimeconfig.cache
 C:\Users\Leon\Desktop\qwewqe\Vjezba.Web\obj\Debug\net8.0\ref\Vjezba.Web.dll
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\web.config
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\appsettings.json
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\firebase-service-account.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\appsettings.Development.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\firebase-service-account.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\Vjezba.Web.deps.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\Vjezba.Web.runtimeconfig.json
+C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\publish\Vjezba.Web.staticwebassets.endpoints.json
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Vjezba.Web.staticwebassets.runtime.json
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Vjezba.Web.staticwebassets.endpoints.json
 C:\Users\Leon\Desktop\photoroullete-backend\Vjezba.Web\bin\Debug\net8.0\Vjezba.Web.exe

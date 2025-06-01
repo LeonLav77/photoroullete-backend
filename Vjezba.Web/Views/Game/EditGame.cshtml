@@ -1,0 +1,414 @@
+@model Vjezba.Model.Game
+
+@{
+    ViewData["Title"] = $"Edit Game - {Model.Code}";
+    var playerScores = ViewBag.PlayerScores as Dictionary<string, int>;
+}
+
+<div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Edit Game: @Model.Code</h2>
+                <p>Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                @if (Model.FinishedAt.HasValue)
+                {
+                    <p>Finished: @Model.FinishedAt.Value.ToString("yyyy-MM-dd HH:mm")</p>
+                }
+                
+                <!-- Game Excitement Dropdown -->
+                <div class="mb-3">
+                    <label for="excitementSelect" class="form-label">Game Excitement Level:</label>
+                    <select class="form-select" id="excitementSelect" onchange="updateExcitement()">
+                        <option value="1" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.VeryBoring)">Very Boring</option>
+                        <option value="2" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.Boring)">Boring</option>
+                        <option value="3" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.Average)">Average</option>
+                        <option value="4" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.Interesting)">Interesting</option>
+                        <option value="5" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.Exciting)">Exciting</option>
+                        <option value="6" selected="@(Model.Excitement == Vjezba.Model.GameExcitement.VeryExciting)">Very Exciting</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <!-- TAG HELPER #1: Link using asp-action and asp-controller -->
+                <a asp-action="GameFlow" asp-controller="Game" asp-route-id="@Model.Id" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i> View Mode
+                </a>
+                <button type="button" class="btn btn-success" onclick="saveAllChanges()">
+                    <i class="fas fa-save"></i> Save All Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Players with Editable Scores -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Players (@Model.PlayersCollection.Count) - <small class="text-muted">Click scores to edit</small></h4>
+            <div class="row">
+                @{
+                    var playersWithScores = Model.PlayersCollection.Select(player => new {
+                        Player = player,
+                        Score = playerScores != null && playerScores.ContainsKey(player.ConnectionId) 
+                            ? playerScores[player.ConnectionId] : 0
+                    }).OrderByDescending(p => p.Score).ToList();
+                }
+                
+                @for (int i = 0; i < playersWithScores.Count; i++)
+                {
+                    var playerData = playersWithScores[i];
+                    var borderClass = "";
+                    var rankText = "";
+                    
+                    switch (i)
+                    {
+                        case 0:
+                            borderClass = "border-warning border-3";
+                            rankText = "🥇 1st";
+                            break;
+                        case 1:
+                            borderClass = "border-secondary border-3";
+                            rankText = "🥈 2nd";
+                            break;
+                        case 2:
+                            borderClass = "border-danger border-3";
+                            rankText = "🥉 3rd";
+                            break;
+                        case 3:
+                            borderClass = "border-info border-3";
+                            rankText = "🏅 4th";
+                            break;
+                        default:
+                            borderClass = "border-light";
+                            rankText = $"{i + 1}th";
+                            break;
+                    }
+                    
+                    <div class="col-md-3 mb-2">
+                        <div class="card @borderClass">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">@playerData.Player.Name</h6>
+                                    <small class="text-muted">@rankText</small>
+                                </div>
+                                <div class="editable-score-container">
+                                    <span class="score-display">
+                                        <strong>Total Score: <span id="score-@playerData.Player.ConnectionId">@playerData.Score</span></strong>
+                                    </span>
+                                    <div class="score-edit d-none" id="edit-@playerData.Player.ConnectionId">
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" class="form-control" value="@playerData.Score" id="input-@playerData.Player.ConnectionId">
+                                            <button class="btn btn-success btn-sm" onclick="saveScore('@playerData.Player.ConnectionId')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm" onclick="cancelEdit('@playerData.Player.ConnectionId', @playerData.Score)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Rounds with Delete Option -->
+    <div class="row">
+        <div class="col-12">
+            <h4>Rounds (@Model.RoundsCollection.Count) - <small class="text-muted">Click trash icon to delete</small></h4>
+            @{
+                var sortedRounds = Model.RoundsCollection.OrderBy(r => r.Number).ToList();
+            }
+            @foreach (var round in sortedRounds)
+            {
+                <div class="card mb-3" id="round-@round.Id">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Round @round.Number</h5>
+                            @if (!string.IsNullOrEmpty(round.CorrectAnswer))
+                            {
+                                var correctAnswerPlayerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == round.CorrectAnswer)?.Name ?? "Unknown";
+                                <small class="text-muted">Correct Answer: @correctAnswerPlayerName</small>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteRound(@round.Id, @round.Number)" title="Delete Round">
+                            <i class="fas fa-trash"></i> Delete Round
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <!-- TAG HELPER #2: Conditional display using asp-if -->
+                        <div class="mb-3" asp-if="@(!string.IsNullOrEmpty(round.Image))">
+                            <img src="data:image/jpeg;base64,@round.Image" alt="Round @round.Number Image" class="img-fluid" style="max-height: 200px;" />
+                        </div>
+                        
+                        <h6>Answers (@round.AnswersCollection.Count)</h6>
+                        @if (round.AnswersCollection.Any())
+                        {
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Answer</th>
+                                        <th>Score <small class="text-muted">(click to edit)</small></th>
+                                        <th>Time Left</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var sortedAnswers = round.AnswersCollection.OrderByDescending(a => a.Score).ToList();
+                                    }
+                                    @foreach (var answer in sortedAnswers)
+                                    {
+                                        var playerName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.Player)?.Name ?? answer.Player;
+                                        var playersAnswerAsName = Model.PlayersCollection.FirstOrDefault(p => p.ConnectionId == answer.PlayersAnswer)?.Name;
+
+                                        <tr>
+                                            <td>@playerName</td>
+                                            <td>@playersAnswerAsName</td>
+                                            <td>
+                                                <span class="answer-score-display" onclick="editAnswerScore(@answer.Id, @answer.Score)">
+                                                    <span id="answer-score-@answer.Id">@answer.Score</span>
+                                                    <i class="fas fa-edit text-muted ms-1" style="font-size: 0.7em;"></i>
+                                                </span>
+                                                <div class="answer-score-edit d-none" id="answer-edit-@answer.Id">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" class="form-control" value="@answer.Score" id="answer-input-@answer.Id" style="width: 80px;">
+                                                        <button class="btn btn-success btn-sm" onclick="saveAnswerScore(@answer.Id)">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                        <button class="btn btn-secondary btn-sm" onclick="cancelAnswerEdit(@answer.Id, @answer.Score)">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@answer.TimeRemaining s</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No answers for this round.</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal for Round Deletion -->
+<div class="modal fade" id="deleteRoundModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Round Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="roundToDelete"></strong>?</p>
+                <p class="text-danger">This action cannot be undone and will remove all answers for this round.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Round</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAG HELPER #3: Form using asp-action and asp-controller for CSRF token -->
+<form asp-action="SaveGameChanges" asp-controller="Game" method="post" style="display: none;" id="hiddenForm">
+    <!-- This form is hidden but provides CSRF token for our AJAX calls -->
+</form>
+
+<script>
+    // Store changes to be saved
+    let pendingChanges = {
+        playerScores: {},
+        answerScores: {},
+        deletedRounds: [],
+        excitement: null
+    };
+
+    // Game Excitement Update Function
+    function updateExcitement() {
+        const excitementValue = parseInt(document.getElementById('excitementSelect').value);
+        pendingChanges.excitement = excitementValue;
+        showAlert('Excitement level changed. Click "Save All Changes" to confirm.', 'info');
+    }
+
+    // Player Score Editing Functions
+    function editScore(playerId, currentScore) {
+        document.querySelector(`#score-${playerId}`).parentNode.classList.add('d-none');
+        document.querySelector(`#edit-${playerId}`).classList.remove('d-none');
+        document.querySelector(`#input-${playerId}`).focus();
+    }
+
+    function saveScore(playerId) {
+        const newScore = parseInt(document.querySelector(`#input-${playerId}`).value);
+        document.querySelector(`#score-${playerId}`).textContent = newScore;
+        document.querySelector(`#score-${playerId}`).parentNode.classList.remove('d-none');
+        document.querySelector(`#edit-${playerId}`).classList.add('d-none');
+        
+        // Store the change
+        pendingChanges.playerScores[playerId] = newScore;
+    }
+
+    function cancelEdit(playerId, originalScore) {
+        document.querySelector(`#input-${playerId}`).value = originalScore;
+        document.querySelector(`#score-${playerId}`).parentNode.classList.remove('d-none');
+        document.querySelector(`#edit-${playerId}`).classList.add('d-none');
+    }
+
+    // Answer Score Editing Functions
+    function editAnswerScore(answerId, currentScore) {
+        document.querySelector(`#answer-score-${answerId}`).parentNode.classList.add('d-none');
+        document.querySelector(`#answer-edit-${answerId}`).classList.remove('d-none');
+        document.querySelector(`#answer-input-${answerId}`).focus();
+    }
+
+    function saveAnswerScore(answerId) {
+        const newScore = parseInt(document.querySelector(`#answer-input-${answerId}`).value);
+        document.querySelector(`#answer-score-${answerId}`).textContent = newScore;
+        document.querySelector(`#answer-score-${answerId}`).parentNode.classList.remove('d-none');
+        document.querySelector(`#answer-edit-${answerId}`).classList.add('d-none');
+        
+        // Store the change
+        pendingChanges.answerScores[answerId] = newScore;
+    }
+
+    function cancelAnswerEdit(answerId, originalScore) {
+        document.querySelector(`#answer-input-${answerId}`).value = originalScore;
+        document.querySelector(`#answer-score-${answerId}`).parentNode.classList.remove('d-none');
+        document.querySelector(`#answer-edit-${answerId}`).classList.add('d-none');
+    }
+
+    // Round Deletion Functions
+    function deleteRound(roundId, roundNumber) {
+        document.querySelector('#roundToDelete').textContent = `Round ${roundNumber}`;
+        document.querySelector('#confirmDeleteBtn').onclick = () => confirmDeleteRound(roundId);
+        new bootstrap.Modal(document.getElementById('deleteRoundModal')).show();
+    }
+
+    function confirmDeleteRound(roundId) {
+        // Hide the round visually
+        document.querySelector(`#round-${roundId}`).style.display = 'none';
+        
+        // Store the deletion
+        pendingChanges.deletedRounds.push(roundId);
+        
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('deleteRoundModal')).hide();
+        
+        // Show success message
+        showAlert('Round marked for deletion. Click "Save All Changes" to confirm.', 'warning');
+    }
+
+    // Save All Changes
+    function saveAllChanges() {
+        if (Object.keys(pendingChanges.playerScores).length === 0 && 
+            Object.keys(pendingChanges.answerScores).length === 0 && 
+            pendingChanges.deletedRounds.length === 0 &&
+            pendingChanges.excitement === null) {
+            showAlert('No changes to save.', 'info');
+            return;
+        }
+
+        // Get CSRF token from hidden form
+        const token = document.querySelector('#hiddenForm input[name="__RequestVerificationToken"]')?.value;
+
+        // Here you would make an AJAX call to your backend
+        fetch('@Url.Action("SaveGameChanges", "Game")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({
+                gameId: @Model.Id,
+                playerScores: pendingChanges.playerScores,
+                answerScores: pendingChanges.answerScores,
+                deletedRounds: pendingChanges.deletedRounds,
+                excitement: pendingChanges.excitement
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Changes saved successfully!', 'success');
+                // Clear pending changes
+                pendingChanges = { playerScores: {}, answerScores: {}, deletedRounds: [], excitement: null };
+                
+                // Optionally reload the page to reflect changes
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showAlert('Error saving changes: ' + data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            showAlert('Error saving changes: ' + error.message, 'danger');
+        });
+    }
+
+    // Utility function to show alerts
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.top = '20px';
+        alertDiv.style.right = '20px';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+
+    // Add keyboard support for editing
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.type === 'number') {
+            if (e.target.id.startsWith('input-')) {
+                const playerId = e.target.id.replace('input-', '');
+                saveScore(playerId);
+            } else if (e.target.id.startsWith('answer-input-')) {
+                const answerId = e.target.id.replace('answer-input-', '');
+                saveAnswerScore(answerId);
+            }
+        }
+    });
+</script>
+
+<style>
+    .editable-score-container .score-display:hover,
+    .answer-score-display:hover {
+        background-color: #f8f9fa;
+        padding: 2px 4px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    
+    .fas.fa-edit {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+    
+    .score-display:hover .fas.fa-edit,
+    .answer-score-display:hover .fas.fa-edit {
+        opacity: 1;
+    }
+</style>

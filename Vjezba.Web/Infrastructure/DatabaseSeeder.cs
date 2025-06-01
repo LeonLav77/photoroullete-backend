@@ -48,8 +48,7 @@ namespace Vjezba.Infrastructure
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true,
-                    OIB = "12345678901",
-                    JMBG = "1234567890123"
+                    WillInvitePlayers = true
                 };
 
                 if ((await userManager.CreateAsync(adminUser, "Admin123!")).Succeeded)
@@ -67,8 +66,7 @@ namespace Vjezba.Infrastructure
                     UserName = managerEmail,
                     Email = managerEmail,
                     EmailConfirmed = true,
-                    OIB = "23456789012",
-                    JMBG = "2345678901234"
+                    WillInvitePlayers = false
                 };
 
                 if ((await userManager.CreateAsync(managerUser, "Manager123!")).Succeeded)

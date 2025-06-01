@@ -50,17 +50,8 @@ namespace Vjezba.Web.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
-            [StringLength(11, MinimumLength = 11, ErrorMessage = "OIB must be exactly 11 characters.")]
-            [RegularExpression(@"^\d{11}$", ErrorMessage = "OIB must contain only numbers.")]
-            [Display(Name = "OIB")]
-            public string OIB { get; set; }
-
-            [Required]
-            [StringLength(13, MinimumLength = 13, ErrorMessage = "JMBG must be exactly 13 characters.")]
-            [RegularExpression(@"^\d{13}$", ErrorMessage = "JMBG must contain only numbers.")]
-            [Display(Name = "JMBG")]
-            public string JMBG { get; set; }
+            [Display(Name = "Are you going to invite people to games?")]
+            public bool WillInvitePlayers { get; set; } = false;
         }
 
         public IActionResult OnGetAsync()
@@ -135,8 +126,7 @@ namespace Vjezba.Web.Areas.Identity.Pages.Account
                 { 
                     UserName = Input.Email, 
                     Email = Input.Email,
-                    OIB = Input.OIB,
-                    JMBG = Input.JMBG
+                    WillInvitePlayers = Input.WillInvitePlayers
                 };
 
                 var result = await _userManager.CreateAsync(user);

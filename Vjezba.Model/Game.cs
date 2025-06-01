@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Vjezba.Model
 {
@@ -10,10 +11,13 @@ namespace Vjezba.Model
 
         public string Code { get; set; }
 
+        [JsonIgnore]
         public List<Player> Players { get; set; } = new List<Player>();
 
+        [JsonIgnore]
         public List<Round> Rounds { get; set; } = new List<Round>();
 
+        [JsonIgnore]
         [NotMapped]
         public Dictionary<string, string> Images { get; set; } = new Dictionary<string, string>();
 
@@ -22,6 +26,8 @@ namespace Vjezba.Model
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? FinishedAt { get; set; }
+
+        public GameExcitement Excitement { get; set; } = GameExcitement.Average;
 
         // Navigation properties
         public virtual ICollection<Player> PlayersCollection { get; set; } = new List<Player>();

@@ -2,26 +2,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vjezba.DAL;
 using Vjezba.Model;
+using Vjezba.Web.Services;
 
 namespace Vjezba.Web.Controllers
 {
     public class GameController : Controller
     {
+        private readonly GameValidationService _validationService;
+
+        public GameController()
+        {
+            _validationService = new GameValidationService();
+        }
         public async Task<IActionResult> Index()
         {
             try
             {
                 var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
                 optionsBuilder.UseSqlite("Data Source=ClientManager.db");
-                
+
                 using var context = new ClientManagerDbContext(optionsBuilder.Options);
-                
+
                 Console.WriteLine("Loading games from database...");
-                
-                // First, let's see how many games are in the database
+
                 var gameCount = await context.Games.CountAsync();
-                Console.WriteLine($"Total games in database: {gameCount}");
-                
+
                 var games = await context.Games
                     .Include(g => g.PlayersCollection)
                     .Include(g => g.RoundsCollection)
@@ -29,18 +34,10 @@ namespace Vjezba.Web.Controllers
                     .OrderByDescending(g => g.CreatedAt)
                     .ToListAsync();
 
-                Console.WriteLine($"Loaded {games.Count} games successfully");
-                
-                foreach (var game in games)
-                {
-                    Console.WriteLine($"Game: {game.Code}, Players: {game.PlayersCollection.Count}, Rounds: {game.RoundsCollection.Count}, Created: {game.CreatedAt}");
-                }
-
                 return View(games);
             }
             catch (Exception ex)
             {
-                // Log the error
                 Console.WriteLine($"Error loading games: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 return View(new List<Game>());
@@ -58,7 +55,7 @@ namespace Vjezba.Web.Controllers
             {
                 var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
                 optionsBuilder.UseSqlite("Data Source=ClientManager.db");
-                
+
                 using var context = new ClientManagerDbContext(optionsBuilder.Options);
 
                 var game = await context.Games
@@ -72,7 +69,6 @@ namespace Vjezba.Web.Controllers
                     return NotFound();
                 }
 
-                // Calculate player scores to avoid LINQ in view
                 var playerScores = new Dictionary<string, int>();
                 foreach (var player in game.PlayersCollection)
                 {
@@ -90,6 +86,134 @@ namespace Vjezba.Web.Controllers
             {
                 Console.WriteLine($"Error loading game {id}: {ex.Message}");
                 return NotFound();
+            }
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> EditGame(int id)
+        {
+            // Validate ID using service
+            var idValidation = _validationService.ValidateGameId(id);
+            if (!idValidation.IsValid)
+            {
+                return BadRequest(idValidation.ErrorMessage);
+            }
+
+            try
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
+                optionsBuilder.UseSqlite("Data Source=ClientManager.db");
+
+                using var _context = new ClientManagerDbContext(optionsBuilder.Options);
+
+                var game = await _context.Games
+                    .Include(g => g.PlayersCollection)
+                    .Include(g => g.RoundsCollection)
+                        .ThenInclude(r => r.AnswersCollection)
+                    .FirstOrDefaultAsync(g => g.Id == id);
+
+                // Validate game data using service
+                var gameValidation = _validationService.ValidateGameData(game, id);
+                if (!gameValidation.IsValid)
+                {
+                    return gameValidation.StatusCode == 404 
+                        ? NotFound(gameValidation.ErrorMessage) 
+                        : BadRequest(gameValidation.ErrorMessage);
+                }
+
+                var playerScores = new Dictionary<string, int>();
+                foreach (var player in game.PlayersCollection)
+                {
+                    // Validate player data using service
+                    if (!_validationService.IsValidPlayer(player))
+                    {
+                        continue; // Skip invalid players
+                    }
+
+                    var totalScore = game.RoundsCollection
+                        .SelectMany(r => r.AnswersCollection ?? new List<Answer>())
+                        .Where(a => a.Player == player.ConnectionId)
+                        .Sum(a => a.Score);
+                    playerScores[player.ConnectionId] = totalScore;
+                }
+
+                ViewBag.PlayerScores = playerScores;
+                return View(game);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading game {id} for editing: {ex.Message}");
+                return StatusCode(500, "An error occurred while loading the game");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveGameChanges([FromBody] SaveGameChangesRequest request)
+        {
+            // Validate all answer scores first
+            foreach (var answerScore in request.AnswerScores)
+            {
+                var scoreValidation = _validationService.ValidateScore(answerScore.Value);
+                if (!scoreValidation.IsValid)
+                {
+                    return Json(new { success = false, message = scoreValidation.ErrorMessage });
+                }
+            }
+
+            var optionsBuilder = new DbContextOptionsBuilder<ClientManagerDbContext>();
+            optionsBuilder.UseSqlite("Data Source=ClientManager.db");
+
+            using var _context = new ClientManagerDbContext(optionsBuilder.Options);
+
+            try
+            {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                // Update game excitement if provided
+                if (request.Excitement.HasValue)
+                {
+                    var game = await _context.Games.FindAsync(request.GameId);
+                    if (game != null)
+                    {
+                        game.Excitement = (GameExcitement)request.Excitement.Value;
+                        _context.Games.Update(game);
+                    }
+                }
+
+                foreach (var answerScore in request.AnswerScores)
+                {
+                    var answer = await _context.Answers.FindAsync(answerScore.Key);
+
+                    if (answer != null)
+                    {
+                        answer.Score = answerScore.Value;
+                        _context.Answers.Update(answer);
+                    }
+                }
+
+
+                foreach (var roundId in request.DeletedRounds)
+                {
+                    var round = await _context.Rounds
+                        .Include(r => r.AnswersCollection)
+                        .FirstOrDefaultAsync(r => r.Id == roundId);
+
+                    if (round != null)
+                    {
+                        _context.Answers.RemoveRange(round.AnswersCollection);
+
+                        _context.Rounds.Remove(round);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Json(new { success = true, message = "Changes saved successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
         }
     }

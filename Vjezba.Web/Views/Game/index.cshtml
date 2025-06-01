@@ -19,31 +19,63 @@
                     <th>Game Code</th>
                     <th>Players</th>
                     <th>Rounds</th>
+                    <th>Excitement Level</th>
                     <th>Created</th>
-                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var game in Model)
                 {
-                    <tr>
+                    <tr id="game-row-@game.Id">
                         <td>@game.Code</td>
                         <td>@game.PlayersCollection.Count</td>
                         <td>@game.RoundsCollection.Count</td>
+                        <td>
+                            @{
+                                var excitementBadgeClass = "";
+                                var excitementText = "";
+                                
+                                switch (game.Excitement)
+                                {
+                                    case Vjezba.Model.GameExcitement.VeryBoring:
+                                        excitementBadgeClass = "badge bg-danger";
+                                        excitementText = "Very Boring";
+                                        break;
+                                    case Vjezba.Model.GameExcitement.Boring:
+                                        excitementBadgeClass = "badge bg-warning";
+                                        excitementText = "Boring";
+                                        break;
+                                    case Vjezba.Model.GameExcitement.Average:
+                                        excitementBadgeClass = "badge bg-secondary";
+                                        excitementText = "Average";
+                                        break;
+                                    case Vjezba.Model.GameExcitement.Interesting:
+                                        excitementBadgeClass = "badge bg-info";
+                                        excitementText = "Interesting";
+                                        break;
+                                    case Vjezba.Model.GameExcitement.Exciting:
+                                        excitementBadgeClass = "badge bg-success";
+                                        excitementText = "Exciting";
+                                        break;
+                                    case Vjezba.Model.GameExcitement.VeryExciting:
+                                        excitementBadgeClass = "badge bg-primary";
+                                        excitementText = "Very Exciting";
+                                        break;
+                                    default:
+                                        excitementBadgeClass = "badge bg-secondary";
+                                        excitementText = "Average";
+                                        break;
+                                }
+                            }
+                            <span class="@excitementBadgeClass">@excitementText</span>
+                        </td>
                         <td>@game.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>
-                            @if (game.FinishedAt.HasValue)
-                            {
-                                <span class="badge badge-success">Finished</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-warning">In Progress</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-action="GameFlow" asp-route-id="@game.Id" class="btn btn-sm btn-primary">View</a>
+                            <a asp-action="GameFlow" asp-route-id="@game.Id" class="btn btn-sm btn-primary me-2">View</a>
+                            <button class="btn btn-sm btn-danger" onclick="deleteGame(@game.Id, '@game.Code')">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 }
@@ -51,3 +83,121 @@
         </table>
     }
 </div>
+
+<!-- Confirmation Modal for Game Deletion -->
+<div class="modal fade" id="deleteGameModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Game Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the game <strong id="gameToDelete"></strong>?</p>
+                <p class="text-danger">This action cannot be undone and will remove all game data including players, rounds, and answers.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteGameBtn">Delete Game</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let gameToDeleteId = null;
+
+    function deleteGame(gameId, gameCode) {
+        gameToDeleteId = gameId;
+        document.getElementById('gameToDelete').textContent = gameCode;
+        document.getElementById('confirmDeleteGameBtn').onclick = () => confirmDeleteGame(gameId, gameCode);
+        new bootstrap.Modal(document.getElementById('deleteGameModal')).show();
+    }
+
+    function confirmDeleteGame(gameId, gameCode) {
+        const button = document.getElementById('confirmDeleteGameBtn');
+        
+        // Disable button and show loading
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+
+        fetch(`/api/GameApi/${gameId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Delete failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Hide the game row with smooth animation
+            const gameRow = document.getElementById(`game-row-${gameId}`);
+            gameRow.style.transition = 'opacity 0.3s ease';
+            gameRow.style.opacity = '0';
+            
+            setTimeout(() => {
+                gameRow.remove();
+                
+                // Check if table is now empty
+                const tableBody = document.querySelector('tbody');
+                if (tableBody.children.length === 0) {
+                    // Replace table with "No games found" message
+                    const container = document.querySelector('.container');
+                    container.innerHTML = `
+                        <h2>Games History</h2>
+                        <p>No games found.</p>
+                    `;
+                }
+            }, 300);
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('deleteGameModal')).hide();
+            
+            // Show success message
+            showAlert(`Game "${gameCode}" deleted successfully!`, 'success');
+            
+            // Reset button
+            button.disabled = false;
+            button.innerHTML = 'Delete Game';
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            showAlert('Failed to delete game. Please try again.', 'danger');
+            
+            // Reset button
+            button.disabled = false;
+            button.innerHTML = 'Delete Game';
+        });
+    }
+
+    // Utility function to show alerts
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.top = '20px';
+        alertDiv.style.right = '20px';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+</script>
+
+<style>
+    .table tr {
+        transition: opacity 0.3s ease;
+    }
+</style>
