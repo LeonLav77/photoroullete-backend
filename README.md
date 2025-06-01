@@ -1,8 +1,8 @@
 # 🎲 PhotoRoulette - Backend
 
-Ovaj projekt predstavlja pozadinski (backend) sustav za Android aplikaciju **PhotoRoulette**, izrađen u .NET tehnologiji. Igra omogućuje više igrača da sudjeluju u zabavnim rundama gdje pokušavaju pogoditi tko je poslao koju fotografiju. Backend koristi **SignalR** za komunikaciju u stvarnom vremenu i sinkronizaciju stanja igre među povezanim klijentima. Omogućeno je paralelno pokretanje više zasebnih igara (lobbyja), upravljanje rundama, automatsko bodovanje te kasnije pregledavanje rezultata. Igrači se mogu pridružiti unosom naziva postojećeg lobbyja, a administratorima je omogućeno i naknadno uređivanje podataka.
+Ovaj projekt predstavlja pozadinski (backend) sustav za Android aplikaciju **PhotoRoulette**, izrađen u .NET tehnologiji. Igra omogućuje više igrača da sudjeluju u zabavnim rundama gdje pokušavaju pogoditi tko je poslao koju fotografiju. Backend koristi **SignalR** za komunikaciju u stvarnom vremenu i sinkronizaciju stanja igre među povezanim klijentima. Omogućeno je paralelno pokretanje više zasebnih igara (lobbyja), odigravanje rundi, automatsko bodovanje te kasnije pregledavanje rezultata. Igrači se mogu pridružiti unosom naziva postojećeg lobbyja, a administratorima je omogućeno i naknadno uređivanje podataka.
 
-Sustav podržava prijavu putem klasičnog sustava autentifikacije te putem **OAuth autentifikacije s Google računom**. Postoje tri razine pristupa: neprijavljeni korisnici, prijavljeni korisnici s **Manager** rolom i **Admin** korisnici. Svaka razina ima različita prava pristupa, prikazana na slici u nastavku.
+Sustav podržava prijavu putem klasičnog sustava autentifikacije te putem **OAuth autentifikacije s Google računom**. Postoje tri razine pristupa: neprijavljeni korisnici, prijavljeni korisnici s **Manager** rolom i **Admin** korisnici. Svaka razina ima različita prava pristupa.
 
 Backend je hostan na privatnom **Ubuntu serveru**, kojem se pristupa putem domene `http://tockanetfotorulet.ddns.net`, postavljene pomoću **No-IP** servisa. Za obradu vanjskih zahtjeva koristi se **Apache kao reverse proxy**, koji preusmjerava HTTP promet prema .NET aplikaciji.
 
