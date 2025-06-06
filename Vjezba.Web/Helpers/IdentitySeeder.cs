@@ -17,7 +17,6 @@ namespace Vjezba.Web.Helpers
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-                // Create roles if they don't exist
                 string[] roleNames = { "Admin", "Manager" };
                 
                 foreach (var roleName in roleNames)
@@ -28,7 +27,6 @@ namespace Vjezba.Web.Helpers
                     }
                 }
 
-                // Create Admin user if it doesn't exist
                 string adminEmail = "admin@example.com";
                 if (await userManager.FindByEmailAsync(adminEmail) == null)
                 {

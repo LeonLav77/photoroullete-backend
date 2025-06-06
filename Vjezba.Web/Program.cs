@@ -28,7 +28,6 @@ builder.Services.AddAntiforgery(options =>
     options.SuppressXFrameOptionsHeader = true;
 });
 
-// Or alternatively, disable it completely (less secure but for testing):
 builder.Services.AddMvc(options =>
 {
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.IgnoreAntiforgeryTokenAttribute());
@@ -45,16 +44,12 @@ var app = builder.Build();
 
 app.UseForwardedHeaders();
 
-// Configure middleware pipeline
 MiddlewareConfigurator.ConfigureMiddleware(app);
 
-// Configure routes
 RouteConfigurator.ConfigureRoutes(app);
 
-// Map the SignalR hub
 app.MapHub<RouletteHub>("/roulette-hub");
 
-// Seed database
 await DatabaseSeeder.SeedDatabase(app);
 
 if (FirebaseApp.DefaultInstance == null)

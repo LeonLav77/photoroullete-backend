@@ -25,15 +25,12 @@ public class LobbyManager : ILobbyManager
     {
         string lobbyCode;
         
-        // Safely check if a lobby code was provided in the request
         string requestedLobbyCode = parsed["lobbyCode"]?.ToString();
         
         if (!string.IsNullOrEmpty(requestedLobbyCode))
         {
-            // Use the provided lobby code
             lobbyCode = requestedLobbyCode.ToUpper();
 
-            // Check if lobby already exists
             if (_lobbies.ContainsKey(lobbyCode))
             {
                 await clients.Caller.SendAsync("Error", "Lobby with this code already exists");
@@ -42,7 +39,6 @@ public class LobbyManager : ILobbyManager
         }
         else
         {
-            // Generate a random lobby code if none provided
             Random random = new Random();
             string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -51,7 +47,7 @@ public class LobbyManager : ILobbyManager
                 lobbyCode = new string(Enumerable.Repeat(letters, 5)
                     .Select(s => s[random.Next(s.Length)]).ToArray());
             }
-            while (_lobbies.ContainsKey(lobbyCode)); // Ensure uniqueness
+            while (_lobbies.ContainsKey(lobbyCode)); 
         }
 
         Lobby lobby = new Lobby
@@ -97,13 +93,11 @@ public class LobbyManager : ILobbyManager
             return;
         }
 
-        // Create a new Player object
         Player player = new Player(connectionId, connectionManager.GetName(connectionId))
         {
             Images = new List<string>(connectionManager.GetImages(connectionId))
         };
 
-        // Add player to lobby
         lobby.Players.Add(player);
         _lobbies[lobbyCode] = lobby;
 

@@ -91,7 +91,6 @@ namespace Vjezba.Controllers
                     return NotFound($"Game with ID {id} not found.");
                 }
 
-                // Check if new code conflicts with existing games (excluding current game)
                 if (!string.IsNullOrWhiteSpace(request.Code) && request.Code != game.Code)
                 {
                     var existingGame = await _context.Games
@@ -108,7 +107,6 @@ namespace Vjezba.Controllers
                     game.FinishedAt = request.FinishedAt.Value;
                 }
 
-                // Update excitement level
                 game.Excitement = request.Excitement;
 
                 _context.Games.Update(game);
@@ -146,7 +144,6 @@ namespace Vjezba.Controllers
                     return NotFound($"Game with ID {id} not found.");
                 }
 
-                // Remove all related data (cascade delete)
                 foreach (var round in game.RoundsCollection)
                 {
                     _context.Answers.RemoveRange(round.AnswersCollection);
@@ -212,7 +209,6 @@ namespace Vjezba.Controllers
                     return BadRequest("No game data provided.");
                 }
 
-                // Check if game with this code already exists
                 var existingGame = await _context.Games.FirstOrDefaultAsync(g => g.Code == gameCode);
                 if (existingGame != null)
                 {
@@ -225,11 +221,9 @@ namespace Vjezba.Controllers
                     properties.Add(property.Name);
                 }
 
-                // Use gameCode from URL parameter instead of JSON
                 var createdAt = jsonData.GetProperty("createdAt").GetDateTime();
                 var finishedAt = jsonData.GetProperty("finishedAt").GetDateTime();
                 
-                // Try to get excitement from JSON, default to Average if not present
                 var excitement = GameExcitement.Average;
                 if (jsonData.TryGetProperty("excitement", out var excitementProperty))
                 {
@@ -245,7 +239,7 @@ namespace Vjezba.Controllers
 
                 var gameEntity = new Game
                 {
-                    Code = gameCode, // Use URL parameter
+                    Code = gameCode, 
                     CreatedAt = createdAt,
                     FinishedAt = finishedAt,
                     Excitement = excitement

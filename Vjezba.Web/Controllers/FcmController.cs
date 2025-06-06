@@ -19,7 +19,6 @@ namespace Vjezba.Web.Controllers
             _context = context;
         }
 
-        // POST /fcm/save
         [HttpPost]
         public async Task<IActionResult> Save(string token)
         {
@@ -30,7 +29,6 @@ namespace Vjezba.Web.Controllers
 
             try
             {
-                // Check if token already exists
                 var exists = await _context.FcmTokens.AnyAsync(t => t.Token == token);
                 if (!exists)
                 {
@@ -48,7 +46,6 @@ namespace Vjezba.Web.Controllers
             }
         }
 
-        // GET /fcm/tokens - Get all tokens for sending notifications
         [HttpGet]
         public async Task<IActionResult> Tokens()
         {
@@ -67,13 +64,11 @@ namespace Vjezba.Web.Controllers
             }
         }
 
-        // GET /fcm/invite - Show invite page
         public IActionResult Invite()
         {
             return View();
         }
 
-        // POST /fcm/sendinvite - Send invite to all FCM tokens
         [HttpPost]
         public async Task<IActionResult> SendInvite(string lobbyCode)
         {

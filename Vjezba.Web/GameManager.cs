@@ -68,7 +68,6 @@ public class GameManager : IGameManager
         }
         else
         {
-            // Notify other players about progress
             await clients.Group(lobbyCode).SendAsync("ImageUploadProgress", new { 
                 received = currentImageCount, 
                 total = ROUNDS 
@@ -94,9 +93,6 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
     {
         _roundManager.SavePlayerAnswer(currentRound, connectionId, answer, timeRemaining);
         Console.WriteLine($"[{lobbyCode}] Answer saved for {connectionId}");
-        
-        // Remove the game finished check and database saving from here
-        // The game will be saved when it actually ends in RoundManager.EndGame()
     }
 }
 
@@ -249,7 +245,6 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
 
     private void StorePlayerImages(string lobbyCode, List<string> base64Images, string connectionId)
     {
-        // Initialize the lobby's image dictionary if it doesn't exist
         var lobbyImages = _playerBase64Images.GetOrAdd(lobbyCode, _ => new ConcurrentDictionary<string, string>());
 
         foreach (var base64Image in base64Images)
@@ -293,7 +288,7 @@ public async Task SaveAnswer(JObject parsed, string connectionId)
         {
             Code = lobbyCode,
             Players = lobby.Players,
-            Images = images.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) // Convert to regular Dictionary
+            Images = images.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
         };
 
         _games.TryAdd(lobbyCode, game);

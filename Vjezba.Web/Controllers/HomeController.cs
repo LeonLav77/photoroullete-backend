@@ -27,7 +27,6 @@ namespace Vjezba.Web.Controllers
 
                 using var context = new ClientManagerDbContext(optionsBuilder.Options);
 
-                // Calculate simple statistics
                 ViewBag.TotalGames = await context.Games.CountAsync();
                 ViewBag.TotalPlayers = await context.Players.CountAsync();
                 ViewBag.TotalPhotos = await context.Rounds.CountAsync();
@@ -37,7 +36,6 @@ namespace Vjezba.Web.Controllers
             {
                 _logger.LogError(ex, "Error calculating statistics for home page");
                 
-                // Provide default values if database is unavailable
                 ViewBag.TotalGames = "N/A";
                 ViewBag.TotalPlayers = "N/A";
                 ViewBag.TotalPhotos = "N/A";

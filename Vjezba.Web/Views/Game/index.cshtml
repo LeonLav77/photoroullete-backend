@@ -137,7 +137,6 @@
                                     {
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <!-- View button - Available for Manager and Admin -->
                                                 @if (isManager || isAdmin)
                                                 {
                                                     <a asp-action="GameFlow" asp-route-id="@game.Id" 
@@ -147,7 +146,6 @@
                                                     </a>
                                                 }
                                                 
-                                                <!-- Edit button - Admin only -->
                                                 @if (isAdmin)
                                                 {
                                                     <a asp-action="EditGame" asp-route-id="@game.Id" 
@@ -156,7 +154,6 @@
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     
-                                                    <!-- Delete button - Admin only -->
                                                     <button class="btn btn-sm btn-outline-danger" 
                                                             onclick="deleteGame(@game.Id, '@game.Code')"
                                                             title="Delete game">
@@ -227,7 +224,6 @@
     }
 </div>
 
-<!-- Confirmation Modal for Game Deletion - Admin Only -->
 @if (isAdmin)
 {
     <div class="modal fade" id="deleteGameModal" tabindex="-1">

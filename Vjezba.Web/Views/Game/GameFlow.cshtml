@@ -5,33 +5,11 @@
     var playerScores = ViewBag.PlayerScores as Dictionary<string, int>;
     bool isAdmin = User.IsInRole("Admin");
     bool isManager = User.IsInRole("Manager");
-    bool hasEditAccess = isAdmin; // Only admins can edit
-    bool hasViewAccess = isManager || isAdmin; // Managers and admins can view details
-}
-
-@* Check if user has access to view this page *@
-@if (!hasViewAccess)
-{
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="alert alert-danger text-center">
-                    <i class="fas fa-lock fa-3x mb-3"></i>
-                    <h4>Access Denied</h4>
-                    <p>You don't have permission to view game details. Please contact an administrator if you need access.</p>
-                    <hr>
-                    <a href="@Url.Action("Index", "Game")" class="btn btn-primary">
-                        <i class="fas fa-arrow-left"></i> Back to Games List
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    return;
+    bool hasEditAccess = isAdmin; 
+    bool hasViewAccess = isManager || isAdmin; 
 }
 
 <div class="container">
-    <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-start">
@@ -67,7 +45,6 @@
                         <i class="fas fa-calendar"></i> Started: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")
                     </p>
                     
-                    <!-- Display Excitement Level -->
                     <p>
                         <strong>Excitement Level:</strong> 
                         @{
@@ -118,7 +95,6 @@
                     </p>
                 </div>
                 
-                <!-- Action Buttons -->
                 <div class="d-flex flex-column gap-2">
                     @if (hasEditAccess)
                     {
@@ -174,22 +150,22 @@
                             switch (i)
                             {
                                 case 0:
-                                    borderClass = "border-warning border-3"; // Gold
+                                    borderClass = "border-warning border-3"; 
                                     rankText = "1st Place";
                                     rankIcon = "🥇";
                                     break;
                                 case 1:
-                                    borderClass = "border-secondary border-3"; // Silver
+                                    borderClass = "border-secondary border-3";
                                     rankText = "2nd Place";
                                     rankIcon = "🥈";
                                     break;
                                 case 2:
-                                    borderClass = "border-danger border-3"; // Bronze
+                                    borderClass = "border-danger border-3";
                                     rankText = "3rd Place";
                                     rankIcon = "🥉";
                                     break;
                                 case 3:
-                                    borderClass = "border-info border-3"; // 4th
+                                    borderClass = "border-info border-3";
                                     rankText = "4th Place";
                                     rankIcon = "🏅";
                                     break;
@@ -221,7 +197,6 @@
         </div>
     </div>
 
-    <!-- Rounds Section -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -338,7 +313,6 @@
     </div>
 </div>
 
-@* Export functionality - Admin only *@
 @if (hasEditAccess)
 {
     <script>

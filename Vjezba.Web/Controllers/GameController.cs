@@ -72,6 +72,7 @@ namespace Vjezba.Web.Controllers
                 }
 
                 var playerScores = new Dictionary<string, int>();
+
                 foreach (var player in game.PlayersCollection)
                 {
                     var score = game.RoundsCollection
@@ -95,7 +96,6 @@ namespace Vjezba.Web.Controllers
         [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> EditGame(int id)
         {
-            // Validate ID using service
             var idValidation = _validationService.ValidateGameId(id);
             if (!idValidation.IsValid)
             {
@@ -115,7 +115,6 @@ namespace Vjezba.Web.Controllers
                         .ThenInclude(r => r.AnswersCollection)
                     .FirstOrDefaultAsync(g => g.Id == id);
 
-                // Validate game data using service
                 var gameValidation = _validationService.ValidateGameData(game, id);
                 if (!gameValidation.IsValid)
                 {
@@ -127,10 +126,9 @@ namespace Vjezba.Web.Controllers
                 var playerScores = new Dictionary<string, int>();
                 foreach (var player in game.PlayersCollection)
                 {
-                    // Validate player data using service
                     if (!_validationService.IsValidPlayer(player))
                     {
-                        continue; // Skip invalid players
+                        continue;
                     }
 
                     var totalScore = game.RoundsCollection
@@ -154,7 +152,6 @@ namespace Vjezba.Web.Controllers
         [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> SaveGameChanges([FromBody] SaveGameChangesRequest request)
         {
-            // Validate all answer scores first
             foreach (var answerScore in request.AnswerScores)
             {
                 var scoreValidation = _validationService.ValidateScore(answerScore.Value);
@@ -173,7 +170,6 @@ namespace Vjezba.Web.Controllers
             {
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
-                // Update game excitement if provided
                 if (request.Excitement.HasValue)
                 {
                     var game = await _context.Games.FindAsync(request.GameId);

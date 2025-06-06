@@ -16,7 +16,6 @@ public class RoundManager : IRoundManager
     private static readonly int ROUNDS = 5;
     private static readonly int ROUND_TIME = 5;
     
-    // Add dependency injection for GameManager
     private readonly IGameManager _gameManager;
 
     public RoundManager(IGameManager gameManager = null)
@@ -82,7 +81,6 @@ public class RoundManager : IRoundManager
         Console.WriteLine($"[{lobbyCode}] Game over - saving to database");
         await clients.Group(lobbyCode).SendAsync("GameOver", jsonLeaderboard);
         
-        // IMPORTANT: Save the game to database here, when we know it's truly finished
         if (_gameManager != null)
         {
             try
@@ -97,7 +95,6 @@ public class RoundManager : IRoundManager
         }
     }
 
-    // ... rest of the methods remain the same
     private Round CreateNewRound(Game game, int roundNumber)
     {
         var imageEntry = game.Images.ElementAt(roundNumber - 1);
